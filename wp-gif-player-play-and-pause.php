@@ -13,4 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// Require the necessary files to run the classes.
+require_once 'includes/required-files.php';
 
+new WP_GP_PP();
