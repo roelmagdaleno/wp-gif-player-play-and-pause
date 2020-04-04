@@ -110,7 +110,7 @@ if ( ! class_exists( 'WP_GP_PP_Options' ) ) {
 		public function generate_field( $setting_data ) {
 			$setting_data['current'] = $this->settings[ $setting_data['id'] ] ?? '';
 
-			$class = 'HTML_' . ucfirst( $setting_data['type'] );
+			$class = 'WP_GP_PP_HTML_' . ucfirst( $setting_data['type'] );
 			echo ( new $class() )->render( $setting_data );
 		}
 
