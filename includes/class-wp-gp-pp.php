@@ -17,7 +17,12 @@ if ( ! class_exists( 'WP_GP_PP' ) ) {
 		 * @since 0.1.0
 		 */
 		public function __construct() {
-			new WP_GP_PP_Options();
+			if ( is_admin() ) {
+				new WP_GP_PP_Options();
+				return;
+			}
+
+			new WP_GP_PP_Shortcode();
 		}
 	}
 }
