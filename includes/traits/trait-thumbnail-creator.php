@@ -57,6 +57,10 @@ trait WP_GP_PP_Thumbnail_Creator {
 				continue;
 			}
 
+			if ( ! wp_gp_pp_is_gif( $attachment_id ) ) {
+				continue;
+			}
+
 			$this->create_thumbnail_from_gif( $attachment_id );
 		}
 
@@ -112,6 +116,10 @@ trait WP_GP_PP_Thumbnail_Creator {
 			return;
 		}
 
+		if ( 'video' === $this->settings['gif_method'] ) {
+			$this->create_video_from_gif( $attachment_id, $gif_source[0] );
+		}
+
 		$thumbnail_path = $this->get_thumbnail_path( $gif_source[0] );
 
 		if ( file_exists( $thumbnail_path ) ) {
@@ -120,7 +128,7 @@ trait WP_GP_PP_Thumbnail_Creator {
 
 		$this->create_thumbnail_file( $gif_source[0], $thumbnail_path );
 
-		$thumbnail_url  = $this->get_thumbnail_url( $thumbnail_path );
+		$thumbnail_url  = wp_gp_pp_path_to_url( $thumbnail_path );
 		$file_type      = wp_check_filetype( $thumbnail_path );
 		$new_attachment = array(
 			'guid'           => $thumbnail_url,
@@ -128,35 +136,10 @@ trait WP_GP_PP_Thumbnail_Creator {
 			'post_title'     => str_replace( '.jpeg', '', wp_basename( $thumbnail_url ) ),
 			'post_content'   => '',
 			'post_status'    => 'inherit',
+			'post_parent'    => $attachment_id,
 		);
 
-		$parent_id         = wp_get_post_parent_id( $attachment_id );
-		$new_attachment_id = wp_insert_attachment( $new_attachment, $thumbnail_path, $parent_id );
-
-		if ( 0 === $new_attachment_id || is_wp_error( $new_attachment_id ) ) {
-			return;
-		}
-
-		if ( ! function_exists( 'wp_generate_attachment_metadata' ) ) {
-			require_once ABSPATH . 'wp-admin/includes/image.php';
-		}
-
-		$attachment_data = wp_generate_attachment_metadata( $new_attachment_id, $thumbnail_path );
-		wp_update_attachment_metadata( $new_attachment_id, $attachment_data );
-	}
-
-	/**
-	 * Get the new thumbnail file url.
-	 * This url will be stored as the "guid" for the new attachment post.
-	 *
-	 * @since  0.1.0
-	 * @access private
-	 *
-	 * @param  string   $thumbnail_path   The new thumbnail file path.
-	 * @return string                     The new thumbnail file url.
-	 */
-	private function get_thumbnail_url( $thumbnail_path ) {
-		return str_replace( ABSPATH, home_url(), $thumbnail_path );
+		wp_gp_pp_insert_new_attachment( $new_attachment, $thumbnail_path );
 	}
 
 	/**
