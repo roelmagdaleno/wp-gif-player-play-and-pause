@@ -98,18 +98,67 @@ if ( ! class_exists( 'WP_GP_PP_Shortcode' ) ) {
 			$thumbnail = str_replace( '.gif', '_gif_thumbnail.jpeg', $gif_source[0] );
 			$width     = esc_attr( $atts['width'] );
 			$height    = esc_attr( $atts['height'] );
+			$render    = 'render_wrapper_for_' . $this->settings['gif_method'];
 
+			$image  = $this->$render( $thumbnail, $width, $height, $atts );
+			$image .= '<div class="wp-gp-pp-overlay"> ';
+			$image .= '<div class="wp-gp-pp-play-button">GIF</div> ';
+			$image .= '</div> </div>';
+
+			return $image;
+		}
+
+		/**
+		 * Generate the HTML to use the GIF player as a normal method.
+		 *
+		 * This method will set two images, one is the preview and the
+		 * second one will be used to set the real GIF source file.
+		 *
+		 * This method is the simpler one because uses the <img> tag to
+		 * load the GIF(s).
+		 *
+		 * @since  0.1.0
+		 * @access private
+		 *
+		 * @param  string   $thumbnail   The GIF thumbnail to use it as preview.
+		 * @param  string   $width       The GIF width.
+		 * @param  string   $height      The GIF height.
+		 * @param  array    $atts        The GIF current attributes.
+		 * @return string                The GIF player wrapper for canvas method.
+		 */
+		private function render_wrapper_for_gif( $thumbnail, $width, $height, $atts ) {
 			$image  = '<div class="wp-gp-pp-container" style="width: ' . $width . 'px; height: ' . $height . 'px">';
-
 			$image .= '<img src="' . esc_attr( $thumbnail ) . '" id="' . esc_attr( $atts['id'] ) . '--thumbnail" ';
 			$image .= 'class="wp-gp-pp-gif-thumbnail" width="' . $width . '" height="' . $height . '" alt="">';
 
 			$image .= '<img src="" id="' . esc_attr( $atts['id'] ) . '" ';
 			$image .= 'class="wp-gp-pp-gif" width="' . $width . '" height="' . $height . '" alt="">';
 
-			$image .= '<div class="wp-gp-pp-overlay"> ';
-			$image .= '<div class="wp-gp-pp-play-button">GIF</div> ';
-			$image .= '</div> </div>';
+			return $image;
+		}
+
+		/**
+		 * Generate the HTML to use the GIF player as a canvas method.
+		 *
+		 * This <canvas> method will use the "libgif.js" library to setup
+		 * the GIF play and pause actions.
+		 *
+		 * @since  0.1.0
+		 * @access private
+		 *
+		 * @param  string   $thumbnail   The GIF thumbnail to use it as preview.
+		 * @param  string   $width       The GIF width.
+		 * @param  string   $height      The GIF height.
+		 * @param  array    $atts        The GIF current attributes.
+		 * @return string                The GIF player wrapper for canvas method.
+		 */
+		private function render_wrapper_for_canvas( $thumbnail, $width, $height, $atts ) {
+			$source = str_replace( '_gif_thumbnail.jpeg', '.gif', $thumbnail );
+
+			$image  = '<div class="wp-gp-pp-container" style="width: ' . $width . 'px; height: ' . $height . 'px">';
+			$image .= '<img src="' . esc_attr( $thumbnail ) . '" id="' . esc_attr( $atts['id'] ) . '" ';
+			$image .= 'rel:animated_src="' . esc_attr( $source ) . '" rel:auto_play="0" class="wp-gp-pp-gif-canvas-player" ';
+			$image .= 'width="' . $width . '" height="' . $height . '" alt="">';
 
 			return $image;
 		}
