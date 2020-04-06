@@ -2,6 +2,14 @@
     position: relative;
 }
 
+.wp-gp-pp-container.is-playing .wp-gp-pp-gif-thumbnail {
+    display: none;
+}
+
+.wp-gp-pp-container.is-playing .wp-gp-pp-gif {
+    display: block;
+}
+
 .wp-gp-pp-overlay {
     align-items: center;
     cursor: pointer;
@@ -32,4 +40,8 @@
     visibility: hidden;
     opacity: 0;
     transition: visibility .5s, opacity .5s linear;
+}
+
+.wp-gp-pp-gif {
+    display: none;
 }
