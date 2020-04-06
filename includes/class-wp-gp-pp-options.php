@@ -156,8 +156,9 @@ if ( ! class_exists( 'WP_GP_PP_Options' ) ) {
 					'type'    => 'radio',
 					'name'    => 'gif_method',
 					'options' => array(
-						'gif'   => 'GIF',
-						'video' => 'Video (Recommended)',
+						'gif'    => 'GIF',
+						'canvas' => 'Canvas',
+						'video'  => 'Video (Recommended)',
 					),
 				),
 			);
