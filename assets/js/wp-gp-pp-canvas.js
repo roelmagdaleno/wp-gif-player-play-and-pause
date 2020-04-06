@@ -51,4 +51,4 @@ function WP_GP_PP_toggleGif( overlay, superGif ) {
     }
 }
 
-document.addEventListener( 'DOMContentLoaded', WP_GP_PP_Init );
+// document.addEventListener( 'DOMContentLoaded', WP_GP_PP_Init );

@@ -17,12 +17,14 @@ if ( ! class_exists( 'WP_GP_PP' ) ) {
 		 * @since 0.1.0
 		 */
 		public function __construct() {
-			if ( is_admin() ) {
-				new WP_GP_PP_Options();
+			new WP_GP_PP_Shortcode();
+
+			if ( ! is_admin() ) {
 				return;
 			}
 
-			new WP_GP_PP_Shortcode();
+			new WP_GP_PP_Media_Uploader();
+			new WP_GP_PP_Options();
 		}
 	}
 }
