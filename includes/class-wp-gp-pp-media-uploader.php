@@ -11,8 +11,18 @@ if ( ! class_exists( 'WP_GP_PP_Media_Uploader' ) ) {
 	 * @since 0.1.0
 	 */
 	class WP_GP_PP_Media_Uploader {
-		// Includes the thumbnail functionality.
-		use WP_GP_PP_Thumbnail_Creator;
+		// Includes the thumbnail and video functionality.
+		use WP_GP_PP_Thumbnail_Creator, WP_GP_PP_Video_Creator;
+
+		/**
+		 * The plugin settings.
+		 *
+		 * @since  0.1.0
+		 * @access private
+		 *
+		 * @var    array   $settings   The plugin settings.
+		 */
+		private $settings;
 
 		/**
 		 * Initialize all action hooks to upload the GIF images
@@ -27,6 +37,8 @@ if ( ! class_exists( 'WP_GP_PP_Media_Uploader' ) ) {
 		 * @since 0.1.0
 		 */
 		public function __construct() {
+			$this->settings = get_option( 'wp_gp_pp_settings' );
+
 			add_action( 'add_attachment', array( $this, 'pre_create_thumbnail_from_gif' ) );
 			add_action( 'save_post', array( $this, 'maybe_create_thumbnail_from_gif' ), 10, 2 );
 			add_action( 'media_buttons', array( $this, 'add_uploader_gif_button' ) );
