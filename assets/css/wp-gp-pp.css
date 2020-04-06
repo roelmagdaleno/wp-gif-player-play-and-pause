@@ -23,8 +23,9 @@
     font-family: Arial, Helvetica, sans-serif;
     font-weight: bold;
     opacity: 1;
-    visibility: visible;
     padding: 20px;
+    user-select: none;
+    visibility: visible;
 }
 
 .wp-gp-pp-play-button.is-playing {
