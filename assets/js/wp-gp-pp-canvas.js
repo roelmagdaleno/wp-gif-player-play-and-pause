@@ -7,7 +7,7 @@
  * @since 0.1.0
  */
 function WP_GP_PP_Init() {
-    const gifs = document.querySelectorAll( '.wp-gp-pp-gif-player' );
+    const gifs = document.querySelectorAll( '.wp-gp-pp-gif-canvas-player' );
 
     for ( let i = 0; i < gifs.length; i++ ) {
         const overlay  = gifs[i].nextElementSibling;
@@ -51,4 +51,4 @@ function WP_GP_PP_toggleGif( overlay, superGif ) {
     }
 }
 
-// document.addEventListener( 'DOMContentLoaded', WP_GP_PP_Init );
+document.addEventListener( 'DOMContentLoaded', WP_GP_PP_Init );
