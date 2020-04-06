@@ -95,17 +95,36 @@ if ( ! class_exists( 'WP_GP_PP_Shortcode' ) ) {
 				'height' => $gif_source['2'],
 			), $raw_atts );
 
-			$thumbnail = str_replace( '.gif', '_gif_thumbnail.jpeg', $gif_source[0] );
-			$width     = esc_attr( $atts['width'] );
-			$height    = esc_attr( $atts['height'] );
-			$render    = 'render_wrapper_for_' . $this->settings['gif_method'];
+			$thumbnail  = $this->get_thumbnail( $gif_source[0] );
+			$width      = esc_attr( $atts['width'] );
+			$height     = esc_attr( $atts['height'] );
+			$render     = 'render_wrapper_for_' . $this->settings['gif_method'];
+			$attachment = array(
+				'thumbnail'     => $thumbnail,
+				'width'         => $width,
+				'height'        => $height,
+				'attachment_id' => $attachment_id,
+			);
 
-			$image  = $this->$render( $thumbnail, $width, $height, $atts );
+			$image  = $this->$render( $attachment, $atts );
 			$image .= '<div class="wp-gp-pp-overlay"> ';
 			$image .= '<div class="wp-gp-pp-play-button">GIF</div> ';
 			$image .= '</div> </div>';
 
 			return $image;
+		}
+
+		/**
+		 * Get the thumbnail link image that belongs to the current GIF.
+		 *
+		 * @since  0.1.0
+		 * @access private
+		 *
+		 * @param  string   $gif_link   The original GIF link (uploaded by the user).
+		 * @return string               The thumbnail link.
+		 */
+		private function get_thumbnail( $gif_link ) {
+			return str_replace( '.gif', '_gif_thumbnail.jpeg', $gif_link );
 		}
 
 		/**
@@ -120,13 +139,15 @@ if ( ! class_exists( 'WP_GP_PP_Shortcode' ) ) {
 		 * @since  0.1.0
 		 * @access private
 		 *
-		 * @param  string   $thumbnail   The GIF thumbnail to use it as preview.
-		 * @param  string   $width       The GIF width.
-		 * @param  string   $height      The GIF height.
-		 * @param  array    $atts        The GIF current attributes.
-		 * @return string                The GIF player wrapper for canvas method.
+		 * @param  array    $attachment   The GIF attachment data.
+		 * @param  array    $atts         The GIF current attributes.
+		 * @return string                 The GIF player wrapper for canvas method.
 		 */
-		private function render_wrapper_for_gif( $thumbnail, $width, $height, $atts ) {
+		private function render_wrapper_for_gif( $attachment, $atts ) {
+			$thumbnail = $attachment['thumbnail'];
+			$width     = $attachment['width'];
+			$height    = $attachment['height'];
+
 			$image  = '<div class="wp-gp-pp-container" style="width: ' . $width . 'px; height: ' . $height . 'px">';
 			$image .= '<img src="' . esc_attr( $thumbnail ) . '" id="' . esc_attr( $atts['id'] ) . '--thumbnail" ';
 			$image .= 'class="wp-gp-pp-gif-thumbnail" width="' . $width . '" height="' . $height . '" alt="">';
@@ -146,13 +167,15 @@ if ( ! class_exists( 'WP_GP_PP_Shortcode' ) ) {
 		 * @since  0.1.0
 		 * @access private
 		 *
-		 * @param  string   $thumbnail   The GIF thumbnail to use it as preview.
-		 * @param  string   $width       The GIF width.
-		 * @param  string   $height      The GIF height.
-		 * @param  array    $atts        The GIF current attributes.
-		 * @return string                The GIF player wrapper for canvas method.
+		 * @param  array    $attachment   The GIF attachment data.
+		 * @param  array    $atts         The GIF current attributes.
+		 * @return string                 The GIF player wrapper for canvas method.
 		 */
-		private function render_wrapper_for_canvas( $thumbnail, $width, $height, $atts ) {
+		private function render_wrapper_for_canvas( $attachment, $atts ) {
+			$thumbnail = $attachment['thumbnail'];
+			$width     = $attachment['width'];
+			$height    = $attachment['height'];
+
 			$source = str_replace( '_gif_thumbnail.jpeg', '.gif', $thumbnail );
 
 			$image  = '<div class="wp-gp-pp-container" style="width: ' . $width . 'px; height: ' . $height . 'px">';
@@ -161,6 +184,53 @@ if ( ! class_exists( 'WP_GP_PP_Shortcode' ) ) {
 			$image .= 'width="' . $width . '" height="' . $height . '" alt="">';
 
 			return $image;
+		}
+
+		/**
+		 * Generate the HTML to use the GIF player as a video method.
+		 *
+		 * To get the <video> sources the plugin should've stored the
+		 * video files in the database and their respective folder path.
+		 *
+		 * The first video we show is the "webm" after that the "mp4".
+		 *
+		 * Also, the thumbnail will be used as the video poster.
+		 *
+		 * @since  0.1.0
+		 * @access private
+		 *
+		 * @param  array    $attachment   The GIF attachment data.
+		 * @param  array    $atts         The GIF current attributes.
+		 * @return string                 The GIF player wrapper for canvas method.
+		 */
+		private function render_wrapper_for_video( $attachment, $atts ) {
+			$thumbnail = $attachment['thumbnail'];
+			$width     = $attachment['width'];
+			$height    = $attachment['height'];
+			$args      = array(
+				'post_parent'    => $attachment['attachment_id'],
+				'orderby'        => 'ID',
+				'order'          => 'ASC',
+				'post_mime_type' => wp_gp_pp_get_video_mime_types(),
+			);
+
+			$children = get_children( $args, ARRAY_A );
+
+			$video  = '<div class="wp-gp-pp-container" style="width: ' . $width . 'px; height: ' . $height . 'px">';
+			$video .= '<video loop muted playsinline class="wp-gp-pp-video-player" ';
+			$video .= 'poster="' . esc_attr( $thumbnail ) . '" id="' . esc_attr( $atts['id'] ) . '" ';
+			$video .= 'width="' . $width . '" height="' . $height . '">';
+
+			foreach ( $children as $video_source ) {
+				$guid = esc_attr( $video_source['guid'] );
+				$type = esc_attr( $video_source['post_mime_type'] );
+
+				$video .= '<source src="' . $guid . '" type="' . $type . '">';
+			}
+
+			$video .= '</video>';
+
+			return $video;
 		}
 	}
 }
