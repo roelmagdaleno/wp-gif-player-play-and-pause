@@ -6,7 +6,9 @@
     const Fragment          = element.Fragment;
     const MediaPlaceholder  = blockEditor.MediaPlaceholder;
     const InspectorControls = blockEditor.InspectorControls;
+    const BlockControls     = blockEditor.BlockControls;
     const ImageSizeControl  = blockEditor.__experimentalImageSizeControl;
+    const MediaReplaceFlow  = blockEditor.MediaReplaceFlow;
     const PanelBody         = components.PanelBody;
     const PanelRow          = components.PanelRow;
     const SelectControl     = components.SelectControl;
@@ -51,6 +53,9 @@
             let height        = attributes.height;
             let imageWidth    = attributes.imageWidth;
             let imageHeight   = attributes.imageHeight;
+
+            const allowedTypes = 'image/gif';
+            const acceptImage  = 'image/gif';
 
             function onSelectImage( media ) {
                 setAttributes( {
@@ -114,6 +119,21 @@
                 );
             }
 
+            function getBlockControls() {
+                return el(
+                    BlockControls,
+                    null,
+                    mediaID && el(
+                        MediaReplaceFlow, {
+                        mediaID: mediaID,
+                        mediaURL: mediaURL,
+                        allowedTypes: allowedTypes,
+                        accept: acceptImage,
+                        onSelect: onSelectImage
+                    } )
+                );
+            }
+
             function getGifPlayer() {
                 return mediaID
                     ? el( ServerSideRender, {
@@ -121,8 +141,8 @@
                         attributes: attributes
                     } )
                     : el( MediaPlaceholder, {
-                        accept: 'image/gif',
-                        allowedTypes: 'image/gif',
+                        accept: acceptImage,
+                        allowedTypes: allowedTypes,
                         icon: 'format-video',
                         value: {
                             mediaID,
@@ -141,6 +161,7 @@
                     Fragment,
                     null,
                     getInspectorControls(),
+                    getBlockControls(),
                     getGifPlayer()
                 )
             );
