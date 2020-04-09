@@ -37,7 +37,7 @@ if ( ! class_exists( 'WP_GP_PP_Media_Uploader' ) ) {
 		 * @since 0.1.0
 		 */
 		public function __construct() {
-			$this->settings = get_option( 'wp_gp_pp_settings' );
+			$this->settings = wp_gp_pp_get_settings();
 
 			add_action( 'add_attachment', array( $this, 'pre_create_thumbnail_from_gif' ) );
 			add_action( 'save_post', array( $this, 'maybe_create_thumbnail_from_gif' ), 10, 2 );
