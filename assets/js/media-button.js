@@ -7,7 +7,12 @@
  * @since 0.1.0
  */
 function WP_GP_PP_initMediaUploader() {
-    const uploaderButton   = document.getElementById( 'wp-gp-pp-media-uploader' );
+    const uploaderButton = document.getElementById( 'wp-gp-pp-media-uploader' );
+
+    if ( ! uploaderButton ) {
+        return;
+    }
+
     uploaderButton.onclick = WP_GP_PP_openMediaUploader;
 }
 
