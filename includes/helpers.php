@@ -25,13 +25,19 @@ function wp_gp_pp_get_attachment_data( $attachment_id, $default = array() ) {
 		return array();
 	}
 
-	return array(
+	$attachment_data = array(
 		'thumbnail'     => wp_gp_pp_get_thumbnail( $gif_source[0] ),
 		'width'         => esc_attr( $default['width'] ?? $gif_source[1] ),
 		'height'        => esc_attr( $default['height'] ?? $gif_source[2] ),
 		'attachment_id' => $attachment_id,
 		'image_id'      => 'wp-gp-pp--id-' . $attachment_id,
 	);
+
+	if ( isset( $default['align'] ) ) {
+		$attachment_data['align'] = esc_attr( $default['align'] );
+	}
+
+	return $attachment_data;
 }
 
 /**
