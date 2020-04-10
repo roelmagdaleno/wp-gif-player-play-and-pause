@@ -6,7 +6,7 @@
  *
  * @since 0.1.0
  */
-function WP_GP_PP_toggleGif() {
+function WP_GP_PP_toggleGIFVideo() {
     const videos = document.querySelectorAll( '.wp-gp-pp-video-player' );
 
     for ( let i = 0; i < videos.length; i++ ) {
@@ -25,4 +25,4 @@ function WP_GP_PP_toggleGif() {
 }
 
 // Register handlers when DOM is ready.
-document.addEventListener( 'DOMContentLoaded', WP_GP_PP_toggleGif );
+document.addEventListener( 'DOMContentLoaded', WP_GP_PP_toggleGIFVideo );

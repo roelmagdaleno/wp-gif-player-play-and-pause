@@ -6,14 +6,14 @@
  *
  * @since 0.1.0
  */
-function WP_GP_PP_Init() {
+function WP_GP_PP_initGIFCanvas() {
     const gifs = document.querySelectorAll( '.wp-gp-pp-gif-canvas-player' );
 
     for ( let i = 0; i < gifs.length; i++ ) {
         const overlay  = gifs[i].nextElementSibling;
         const superGif = new SuperGif( { gif: gifs[i] } );
 
-        superGif.load( () => WP_GP_PP_toggleGif( overlay, superGif ) );
+        superGif.load( () => WP_GP_PP_toggleGIFCanvas( overlay, superGif ) );
     }
 }
 
@@ -30,7 +30,7 @@ function WP_GP_PP_Init() {
  * @param {Element}   overlay    The clicked GIF overlay HTML element.
  * @param {object}    superGif   The clicked GIF element.
  */
-function WP_GP_PP_toggleGif( overlay, superGif ) {
+function WP_GP_PP_toggleGIFCanvas( overlay, superGif ) {
     /**
      * For some reason the function "get_playing" returns
      * true when the GIF finish its loading, that's why we
@@ -51,4 +51,4 @@ function WP_GP_PP_toggleGif( overlay, superGif ) {
     }
 }
 
-document.addEventListener( 'DOMContentLoaded', WP_GP_PP_Init );
+document.addEventListener( 'DOMContentLoaded', WP_GP_PP_initGIFCanvas );
