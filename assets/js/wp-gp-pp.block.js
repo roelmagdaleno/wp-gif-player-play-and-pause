@@ -1,17 +1,18 @@
 ( function ( blocks, blockEditor, element, components, serverSideRender ) {
     const el = element.createElement;
 
-    const registerBlockType = blocks.registerBlockType;
-    const ServerSideRender  = serverSideRender;
-    const Fragment          = element.Fragment;
-    const MediaPlaceholder  = blockEditor.MediaPlaceholder;
-    const InspectorControls = blockEditor.InspectorControls;
-    const BlockControls     = blockEditor.BlockControls;
-    const ImageSizeControl  = blockEditor.__experimentalImageSizeControl;
-    const MediaReplaceFlow  = blockEditor.MediaReplaceFlow;
-    const PanelBody         = components.PanelBody;
-    const PanelRow          = components.PanelRow;
-    const SelectControl     = components.SelectControl;
+    const registerBlockType     = blocks.registerBlockType;
+    const ServerSideRender      = serverSideRender;
+    const Fragment              = element.Fragment;
+    const MediaPlaceholder      = blockEditor.MediaPlaceholder;
+    const InspectorControls     = blockEditor.InspectorControls;
+    const BlockControls         = blockEditor.BlockControls;
+    const BlockAlignmentToolbar = blockEditor.BlockAlignmentToolbar;
+    const ImageSizeControl      = blockEditor.__experimentalImageSizeControl;
+    const MediaReplaceFlow      = blockEditor.MediaReplaceFlow;
+    const PanelBody             = components.PanelBody;
+    const PanelRow              = components.PanelRow;
+    const SelectControl         = components.SelectControl;
 
     registerBlockType( 'roelmagdaleno/gif-player', {
         title: 'GIF Player',
@@ -41,6 +42,10 @@
             },
             imageHeight: {
                 type: 'number'
+            },
+            align: {
+                type: 'string',
+                default: 'center'
             }
         },
         edit: function ( props ) {
@@ -53,6 +58,7 @@
             let height        = attributes.height;
             let imageWidth    = attributes.imageWidth;
             let imageHeight   = attributes.imageHeight;
+            let align         = attributes.align;
 
             const allowedTypes = 'image/gif';
             const acceptImage  = 'image/gif';
@@ -75,6 +81,10 @@
 
             function onChangeImageSize( newValue ) {
                 setAttributes( newValue );
+            }
+
+            function updateAlignment( nextAlign ) {
+                setAttributes( { align: nextAlign } );
             }
 
             function getInspectorControls() {
@@ -123,6 +133,14 @@
                 return el(
                     BlockControls,
                     null,
+                    el(
+                        BlockAlignmentToolbar,
+                        {
+                            value: align,
+                            controls: ['left', 'center', 'right'],
+                            onChange: updateAlignment
+                        }
+                    ),
                     mediaID && el(
                         MediaReplaceFlow, {
                         mediaID: mediaID,
@@ -138,7 +156,8 @@
                 return mediaID
                     ? el( ServerSideRender, {
                         block: 'roelmagdaleno/gif-player',
-                        attributes: attributes
+                        attributes: attributes,
+                        className: `align${align}`
                     } )
                     : el( MediaPlaceholder, {
                         accept: acceptImage,

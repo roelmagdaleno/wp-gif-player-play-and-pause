@@ -22,6 +22,16 @@ if ( ! class_exists( 'WP_GP_PP_Gutenberg_Block' ) ) {
 		private $settings;
 
 		/**
+		 * Whether the GIF has any alignment.
+		 *
+		 * @since  0.1.0
+		 * @access private
+		 *
+		 * @var    bool   $has_alignment   Whether the GIF has any alignment.
+		 */
+		private $has_alignment = false;
+
+		/**
 		 * The script handle to register in queue.
 		 *
 		 * @since  0.1.0
@@ -111,6 +121,9 @@ if ( ! class_exists( 'WP_GP_PP_Gutenberg_Block' ) ) {
 					'imageHeight' => array(
 						'type' => 'number',
 					),
+					'align'       => array(
+						'type' => 'string'
+					),
 				),
 			) );
 		}
@@ -150,12 +163,58 @@ if ( ! class_exists( 'WP_GP_PP_Gutenberg_Block' ) ) {
 			}
 
 			$render = 'wp_gp_pp_render_wrapper_for_' . $gif_method;
-			$image  = $render( $attachment );
-			$image .= '<div class="wp-gp-pp-overlay"> ';
-			$image .= '<div class="wp-gp-pp-play-button">GIF</div> ';
-			$image .= '</div> </div>';
 
-			return $image;
+			$gif  = $this->maybe_get_alignment( $attachment );
+			$gif .= $render( $attachment );
+			$gif .= '<div class="wp-gp-pp-overlay"> ';
+			$gif .= '<div class="wp-gp-pp-play-button">GIF</div> </div> </div>';
+
+			if ( $this->has_alignment ) {
+				$gif .= '</div> </div>';
+			}
+
+			return $gif;
+		}
+
+		/**
+		 * Maybe get the Gutenberg alignment if needed.
+		 *
+		 * @since  0.1.0
+		 * @access private
+		 *
+		 * @param  array   $attachment   The GIF attachment data.
+		 * @return string                The align HTML output if need it.
+		 */
+		private function maybe_get_alignment( $attachment ) {
+			$this->has_alignment = $this->has_gutenberg_alignment( $attachment );
+
+			return $this->has_alignment
+				? '<div class="wp-block-image"> <div class="align' . $attachment['align'] . '">'
+				: '';
+		}
+
+		/**
+		 * Detect if the current GIF is aligned by Gutenberg.
+		 *
+		 * I will say the alignment functionality doesn't work well,
+		 * actually even the Image Gutenberg block doesn't work either
+		 * as expected.
+		 *
+		 * In this case we have to decide if we will add the alignment classes.
+		 * This only works for Gutenberg.
+		 *
+		 * @since  0.1.0
+		 * @access private
+		 *
+		 * @param  array   $attachment   The GIF attachment data.
+		 * @return bool                  Whether the current GIF is aligned by Gutenberg.
+		 */
+		private function has_gutenberg_alignment( $attachment ) {
+			if ( is_admin() || wp_is_json_request() ) {
+				return false;
+			}
+
+			return isset( $attachment['align'] ) && 'center' !== $attachment['align'];
 		}
 	}
 }
