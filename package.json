@@ -1,0 +1,35 @@
+{
+  "name": "wp-gif-player-play-and-pause",
+  "version": "0.1.0",
+  "description": "Attach GIF players into your posts and pages.",
+  "main": "index.js",
+  "scripts": {
+    "minify": "terser assets/js/wp-gp-pp.js --compress --mangle --output assets/js/wp-gp-pp.min.js",
+    "start": "node_modules/.bin/wp-scripts start",
+    "build": "node_modules/.bin/wp-scripts build src/wp-gp-pp.block.js  --output-path=assets/js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/roelmagdaleno/wp-gif-player-play-and-pause.git"
+  },
+  "keywords": [
+    "gif",
+    "player"
+  ],
+  "author": "Roel Magdaleno",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/roelmagdaleno/wp-gif-player-play-and-pause/issues"
+  },
+  "homepage": "https://github.com/roelmagdaleno/wp-gif-player-play-and-pause#readme",
+  "dependencies": {
+    "terser": "^4.6.11"
+  },
+  "devDependencies": {
+    "@wordpress/block-editor": "^3.8.0",
+    "@wordpress/components": "^9.3.0",
+    "@wordpress/element": "^2.12.0",
+    "@wordpress/scripts": "^7.2.0",
+    "@wordpress/server-side-render": "^1.9.0"
+  }
+}
