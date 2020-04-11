@@ -48,6 +48,22 @@
                 default: 'center'
             }
         },
+        transforms: {
+            from: [
+                {
+                    type: 'shortcode',
+                    tag: 'gif-player',
+                    attributes: {
+                        mediaID: {
+                            type: 'number',
+                            shortcode: function ( attributes ) {
+                                return parseInt( attributes.named.id );
+                            }
+                        }
+                    }
+                }
+            ]
+        },
         edit: function ( props ) {
             let attributes    = props.attributes;
             let setAttributes = props.setAttributes;
