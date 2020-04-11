@@ -160,21 +160,23 @@ if ( ! class_exists( 'WP_GP_PP' ) ) {
 		public function get_players_in_post() {
 			global $post;
 
+			// Always include the default method.
+			$this->players_in_post = array( $this->settings['gif_method'] );
+
 			if ( ! $post ) {
-				return array();
+				return $this->players_in_post;
 			}
 
 			$post_blocks = parse_blocks( $post->post_content );
 			$gif_players = array_filter( $post_blocks, array( $this, 'get_our_gif_player_blocks' ) );
 
 			if ( empty( $gif_players ) ) {
-				return array();
+				return $this->players_in_post;
 			}
 
-			$players   = wp_list_pluck( array_column( $gif_players, 'attrs' ), 'gifMethod' );
-			$players[] = $this->settings['gif_method']; // Add default method.
+			$gif_players           = wp_list_pluck( array_column( $gif_players, 'attrs' ), 'gifMethod' );
+			$this->players_in_post = array_unique( array_merge( $this->players_in_post, $gif_players ) );
 
-			$this->players_in_post = array_unique( $players );
 			return $this->players_in_post;
 		}
 
