@@ -5,6 +5,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Whether WordPress is in DEBUG MODE.
+ * This setting is configured in "wp-config.php" file.
+ *
+ * @return bool   Whether WordPress is in DEBUG MODE.
+ */
+function wp_gp_pp_is_debug_mode() {
+	return defined( 'WP_DEBUG' ) && WP_DEBUG;
+}
+
+/**
  * Get the attachment data to pass to our render
  * methods so it can grab the data and finally show to the user.
  *

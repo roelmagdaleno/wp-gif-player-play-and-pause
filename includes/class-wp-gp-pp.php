@@ -109,7 +109,7 @@ if ( ! class_exists( 'WP_GP_PP' ) ) {
 				);
 			}
 
-			$script_handle = 'wp-gp-pp.js';
+			$script_handle = wp_gp_pp_is_debug_mode() ? 'wp-gp-pp.js' : 'wp-gp-pp.min.js';
 
 			wp_enqueue_script(
 				$script_handle,
