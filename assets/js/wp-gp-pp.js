@@ -136,7 +136,7 @@ function WP_GP_PP_INIT() {
         WP_GP_PP_initGIFCanvas();
     }
 
-    if ( gifPlayersInPost.includes( 'gif' ) ) {
+    if ( gifPlayersInPost.includes( 'video' ) ) {
         WP_GP_PP_toggleVideosGIF();
     }
 }
