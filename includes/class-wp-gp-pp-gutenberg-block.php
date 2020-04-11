@@ -49,7 +49,7 @@ if ( ! class_exists( 'WP_GP_PP_Gutenberg_Block' ) ) {
 		 * @since 0.1.0
 		 */
 		public function __construct() {
-			$this->settings = wp_gp_pp_get_settings();
+			$this->settings = WP_GP_PP::get_instance()->settings;
 
 			add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_editor_block_assets' ) );
 			add_action( 'init', array( $this, 'register_block' ) );

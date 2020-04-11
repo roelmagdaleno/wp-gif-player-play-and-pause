@@ -44,7 +44,7 @@ if ( ! class_exists( 'WP_GP_PP_Options' ) ) {
 		 * @since 0.1.0
 		 */
 		public function __construct() {
-			$this->settings = wp_gp_pp_get_settings();
+			$this->settings = WP_GP_PP::get_instance()->settings;
 
 			add_action( 'admin_menu', array( $this, 'register_submenu' ) );
 			add_action( 'admin_init', array( $this, 'add_fields' ) );

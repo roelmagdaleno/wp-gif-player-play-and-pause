@@ -27,7 +27,7 @@ if ( ! class_exists( 'WP_GP_PP_Shortcode' ) ) {
 		 * @since 0.1.0
 		 */
 		public function __construct() {
-			$this->settings = wp_gp_pp_get_settings();
+			$this->settings = WP_GP_PP::get_instance()->settings;
 			add_shortcode( 'gif-player', array( $this, 'render_gif_player' ) );
 		}
 
