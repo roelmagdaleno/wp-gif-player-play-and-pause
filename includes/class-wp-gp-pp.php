@@ -90,7 +90,6 @@ if ( ! class_exists( 'WP_GP_PP' ) ) {
 				return;
 			}
 
-			$settings  = wp_gp_pp_get_settings();
 			$in_footer = true;
 
 			wp_enqueue_style(
@@ -100,7 +99,7 @@ if ( ! class_exists( 'WP_GP_PP' ) ) {
 				WP_GP_PP_VERSION
 			);
 
-			if ( 'canvas' === $settings['gif_method'] ) {
+			if ( 'canvas' === $this->settings['gif_method'] || in_array( 'canvas', $this->players_in_post, true ) ) {
 				wp_enqueue_script(
 					'wp-gp-pp-libgif.js',
 					plugins_url( 'assets/js/libgif.js', __DIR__ ),
@@ -110,15 +109,20 @@ if ( ! class_exists( 'WP_GP_PP' ) ) {
 				);
 			}
 
-			$file_handle = 'wp-gp-pp-' . $settings['gif_method'] . '.js';
+			$script_handle = 'wp-gp-pp.js';
 
 			wp_enqueue_script(
-				$file_handle,
-				plugins_url( 'assets/js/' . $file_handle, __DIR__ ),
+				$script_handle,
+				plugins_url( 'assets/js/' . $script_handle, __DIR__ ),
 				null,
 				WP_GP_PP_VERSION,
 				$in_footer
 			);
+
+			wp_localize_script( $script_handle, 'WP_GIF_PLAYER', array(
+				'defaultGifPlayer' => $this->settings['gif_method'],
+				'gifPlayersInPost' => $this->players_in_post,
+			) );
 		}
 
 		/**
