@@ -112,7 +112,7 @@ function wp_gp_pp_render_wrapper_for_gif( $attachment ) {
 	$image .= '<img src="' . esc_attr( $thumbnail ) . '" id="' . esc_attr( $image_id ) . '--thumbnail" ';
 	$image .= 'class="wp-gp-pp-gif-thumbnail" width="' . $width . '" height="' . $height . '" alt="">';
 
-	$image .= '<img src="" id="' . esc_attr( $image_id ) . '" ';
+	$image .= '<img src="" id="' . esc_attr( $image_id . wp_rand() ) . '" ';
 	$image .= 'class="wp-gp-pp-gif" width="' . $width . '" height="' . $height . '" alt="">';
 
 	return $image;
@@ -138,7 +138,7 @@ function wp_gp_pp_render_wrapper_for_canvas( $attachment ) {
 
 	$image  = '<div class="wp-gp-pp-container" style="width: ' . $width . 'px; height: ' . $height . 'px" ';
 	$image .= 'data-width="' . $width . '" data-height="' . $height . '" data-media-id="' . $attachment['attachment_id'] . '">';
-	$image .= '<img src="' . esc_attr( $thumbnail ) . '" id="' . esc_attr( $attachment['image_id'] ) . '" ';
+	$image .= '<img src="' . esc_attr( $thumbnail ) . '" id="' . esc_attr( $attachment['image_id'] . wp_rand() ) . '" ';
 	$image .= 'rel:animated_src="' . esc_attr( $source ) . '" rel:auto_play="0" class="wp-gp-pp-gif-canvas-player" ';
 	$image .= 'width="' . $width . '" height="' . $height . '" alt="">';
 
@@ -177,7 +177,7 @@ function wp_gp_pp_render_wrapper_for_video( $attachment ) {
 	$video  = '<div class="wp-gp-pp-container" style="width: ' . $width . 'px; height: ' . $height . 'px" ';
 	$video .= 'data-width="' . $width . '" data-height="' . $height . '" data-media-id="' . $attachment['attachment_id'] . '">';
 	$video .= '<video loop muted playsinline class="wp-gp-pp-video-player" ';
-	$video .= 'poster="' . esc_attr( $thumbnail ) . '" id="' . esc_attr( $attachment['image_id'] ) . '" ';
+	$video .= 'poster="' . esc_attr( $thumbnail ) . '" id="' . esc_attr( $attachment['image_id'] . wp_rand() ) . '" ';
 	$video .= 'width="' . $width . '" height="' . $height . '">';
 
 	foreach ( $children as $video_source ) {
