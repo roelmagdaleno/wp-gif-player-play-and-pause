@@ -1,3 +1,41 @@
+const pauseObserver = new IntersectionObserver( WP_GP_PP_maybePauseGIF, {
+    rootMargin: '100px 0px 100px 0px',
+    threshold: 0.7
+} );
+
+/**
+ * Pause the GIF when the player is out of the container view.
+ * We're using the IntersectionObserver API to achieve that.
+ *
+ * @since 0.1.0
+ *
+ * @param {array}                  entries    The current observed elements.
+ * @param {IntersectionObserver}   observer   The current observer object.
+ */
+function WP_GP_PP_maybePauseGIF( entries, observer ) {
+    for ( let i = 0; i < entries.length; i++ ) {
+        const entry = entries[i];
+
+        if ( ! entry.isIntersecting ) {
+            continue;
+        }
+
+        const gifEl = entry.target;
+
+        if ( ! gifEl.dataset.playing ) {
+            continue;
+        }
+
+        const overlay = gifEl.querySelector( '.wp-gp-pp-overlay' );
+
+        if ( ! overlay ) {
+            continue;
+        }
+
+        overlay.click();
+    }
+}
+
 /**
  * Get all GIFs and load them when the DOM is ready.
  *
@@ -12,8 +50,9 @@ function WP_GP_PP_initGIFCanvas() {
     const gifs = document.querySelectorAll( '.wp-gp-pp-gif-canvas-player' );
 
     for ( let i = 0; i < gifs.length; i++ ) {
-        const overlay  = gifs[i].nextElementSibling;
-        const superGif = new SuperGif( { gif: gifs[i] } );
+        const gif      = gifs[i];
+        const overlay  = gif.nextElementSibling;
+        const superGif = new SuperGif( { gif: gif } );
 
         superGif.load( () => WP_GP_PP_toggleCanvasGIF( overlay, superGif ) );
     }
@@ -44,10 +83,14 @@ function WP_GP_PP_toggleCanvasGIF( overlay, superGif ) {
         superGif.pause();
     }
 
+    const container = overlay.parentElement;
+    pauseObserver.observe( container );
+
     overlay.onclick = () => {
         const button    = overlay.children[0];
         const isPlaying = superGif.get_playing();
 
+        isPlaying ? delete container.dataset.playing : container.dataset.playing = 'true';
         isPlaying ? button.classList.remove( 'is-playing' ) : button.classList.add( 'is-playing' );
         isPlaying ? superGif.pause() : superGif.play();
     }
@@ -65,17 +108,21 @@ function WP_GP_PP_toggleVideosGIF() {
     const videos = document.querySelectorAll( '.wp-gp-pp-video-player' );
 
     for ( let i = 0; i < videos.length; i++ ) {
-        const video   = videos[ i ];
-        const overlay = video.nextElementSibling;
+        const video     = videos[ i ];
+        const overlay   = video.nextElementSibling;
+        const container = video.parentElement;
 
         overlay.onclick = () => {
             const button    = overlay.children[0];
             const classList = button.classList;
             const isPlaying = classList.contains( 'is-playing' );
 
+            isPlaying ? delete container.dataset.playing : container.dataset.playing = 'true';
             isPlaying ? classList.remove( 'is-playing' ) : classList.add( 'is-playing' );
             isPlaying ? video.pause() : video.play();
         };
+
+        pauseObserver.observe( container );
     }
 }
 
@@ -95,14 +142,16 @@ function WP_GP_PP_toggleGIF() {
 
     for ( let i = 0; i < thumbnails.length; i++ ) {
         const thumbnail = thumbnails[ i ];
+        const realGifEl = thumbnail.nextElementSibling;
         const container = thumbnail.parentElement;
-        const overlay   = thumbnail.nextElementSibling.nextElementSibling;
+        const overlay   = realGifEl.nextElementSibling;
+
+        pauseObserver.observe( container );
 
         overlay.onclick = () => {
             const button    = overlay.children[0];
             const classList = button.classList;
             const isPlaying = classList.contains( 'is-playing' );
-            let realGifEl   = document.getElementById( thumbnail.id.replace( '--thumbnail', '' ) );
 
             isPlaying ? classList.remove( 'is-playing' ) : classList.add( 'is-playing' );
 
@@ -113,6 +162,7 @@ function WP_GP_PP_toggleGIF() {
                 realGifEl.setAttribute( 'src', gifImage );
             }
 
+            isPlaying ? delete container.dataset.playing : container.dataset.playing = 'true';
             isPlaying ? container.classList.remove( 'is-playing' ) : container.classList.add( 'is-playing' );
         };
     }
