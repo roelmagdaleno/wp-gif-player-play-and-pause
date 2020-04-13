@@ -73,8 +73,39 @@ if ( ! class_exists( 'WP_GP_PP' ) ) {
 				return;
 			}
 
+			add_action( 'admin_notices', array( $this, 'show_admin_notices' ) );
+
 			new WP_GP_PP_Media_Uploader();
 			new WP_GP_PP_Options();
+		}
+
+		/**
+		 * Show the stored admin notices in the transient data.
+		 *
+		 * The transient data needs a "type" and "message" values to
+		 * shot the admin notice properly.
+		 *
+		 * @since 0.1.0
+		 */
+		public function show_admin_notices() {
+			$transient = get_transient( 'wp_gp_pp_admin_notice' );
+
+			if ( ! $transient ) {
+				return;
+			}
+
+			if ( ! isset( $transient['type'], $transient['message'] ) ) {
+				return;
+			}
+
+			$message  = '<div class="notice notice-' . esc_attr( $transient['type'] ) . ' is-dismissible">';
+			$message .= '<p> <strong>WP GIF Player - Play & Pause</strong> </p>';
+			$message .= '<p>' . esc_html( $transient['message'] ) . '</p>';
+			$message .= '</div>';
+
+			delete_transient( 'wp_gp_pp_admin_notice' );
+
+			echo $message;
 		}
 
 		/**
