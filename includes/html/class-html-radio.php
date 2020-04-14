@@ -25,11 +25,15 @@ if ( ! class_exists( 'WP_GP_PP_HTML_Radio' ) ) {
 			$options = $setting_data['options'];
 
 			foreach ( $options as $option_id => $option_text ) {
+				$search_disable = array_search( $option_id, $setting_data['disabled'], true );
+				$disabled       = $setting_data['disabled'][ $search_disable ];
+
 				$html .= '<label>';
 				$html .= '<input type="radio" id="' . esc_attr( $option_id ) . '" ';
 				$html .= 'name="wp_gp_pp_settings[' . esc_attr( $setting_data['name'] ) . ']" ';
 				$html .= 'value="' . esc_attr( $option_id ) . '"';
-				$html .= ' ' . checked( $option_id, $setting_data['current'], false ) . '>';
+				$html .= ' ' . checked( $option_id, $setting_data['current'], false ) . ' ';
+				$html .= disabled( $disabled, $option_id, false ) . '>';
 				$html .= '<span>' . $option_text . '</span> </label> <br>';
 			}
 
