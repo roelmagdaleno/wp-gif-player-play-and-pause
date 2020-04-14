@@ -63,6 +63,8 @@ if ( ! class_exists( 'WP_GP_PP' ) ) {
 			self::$instance = $this;
 			$this->settings = wp_gp_pp_get_settings();
 
+			register_activation_hook( WP_GP_PP_PLUGIN_FILE, array( $this, 'install_default_options' ) );
+
 			new WP_GP_PP_Shortcode();
 			new WP_GP_PP_Gutenberg_Block();
 
@@ -77,6 +79,43 @@ if ( ! class_exists( 'WP_GP_PP' ) ) {
 
 			new WP_GP_PP_Media_Uploader();
 			new WP_GP_PP_Options();
+		}
+
+		/**
+		 * Add or update the plugin settings.
+		 *
+		 * If the setting doesn't exists then will store the default options
+		 * otherwise will look for any setting that doesn't exists yet
+		 * in the stored settings.
+		 *
+		 * @since 0.1.0
+		 */
+		public function install_default_options() {
+			$option_name   = 'wp_gp_pp_settings';
+			$stored_option = get_option( $option_name, array() );
+			$option_values = array(
+				'gif_method'       => 'gif',
+				'ffmpeg_installed' => false,
+			);
+
+			if ( empty( $stored_option ) ) {
+				update_option( $option_name, $option_values, 'no' );
+				return;
+			}
+
+			if ( empty( array_diff_key( $option_values, $stored_option ) ) ) {
+				return;
+			}
+
+			foreach ( $option_values as $value => $data ) {
+				if ( isset( $stored_option[ $value ] ) ) {
+					continue;
+				}
+
+				$stored_option[ $value ] = $data;
+			}
+
+			update_option( $option_name, $stored_option, 'no' );
 		}
 
 		/**
