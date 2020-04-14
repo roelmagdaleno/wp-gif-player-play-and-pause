@@ -46,8 +46,35 @@ if ( ! class_exists( 'WP_GP_PP_Options' ) ) {
 		public function __construct() {
 			$this->settings = WP_GP_PP::get_instance()->settings;
 
+			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
 			add_action( 'admin_menu', array( $this, 'register_submenu' ) );
 			add_action( 'admin_init', array( $this, 'add_fields' ) );
+		}
+
+		/**
+		 * Enqueue the plugin admin script that allow to test
+		 * the FFmpeg library in the server.
+		 *
+		 * @since 0.1.0
+		 *
+		 * @param string   $hook_sufix   The current admin page.
+		 */
+		public function enqueue_admin_scripts( $hook_sufix ) {
+			if ( 'settings_page_wp-gif-player' !== $hook_sufix ) {
+				return;
+			}
+
+			if ( wp_gp_pp_is_ffmpeg_installed() ) {
+				return;
+			}
+
+			wp_enqueue_script(
+				'wp-gp-pp.admin.js',
+				plugins_url( 'assets/js/wp-gp-pp.admin.js', __DIR__ ),
+				null,
+				WP_GP_PP_VERSION,
+				true
+			);
 		}
 
 		/**
