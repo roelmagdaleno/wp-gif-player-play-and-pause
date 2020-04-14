@@ -78,9 +78,11 @@ if ( ! class_exists( 'WP_GP_PP_Options' ) ) {
 		public function add_fields() {
 			register_setting( self::ADMIN_PAGE, self::OPTION_NAME );
 
+			$section_id = 'wp_gp_pp_section';
+
 			add_settings_section(
-				'wp_gp_pp_section',
-				'WP GIF Player - Settings',
+				$section_id,
+				'Settings',
 				'__return_false',
 				self::ADMIN_PAGE
 			);
@@ -95,7 +97,7 @@ if ( ! class_exists( 'WP_GP_PP_Options' ) ) {
 					$label,
 					array( $this, 'generate_field' ),
 					self::ADMIN_PAGE,
-					'wp_gp_pp_section',
+					$section_id,
 					$setting_data
 				);
 			}
@@ -131,9 +133,24 @@ if ( ! class_exists( 'WP_GP_PP_Options' ) ) {
 				return;
 			}
 
+			ob_start();
+
 			echo '<h1>WP GIF Player - Play & Pause</h1>';
 
 			echo '<div class="wrap">';
+
+			if ( ! wp_gp_pp_is_ffmpeg_installed() ) {
+				$warning  = '<section class="notice notice-warning">';
+				$warning .= '<p><strong>Library "FFmpeg" not installed</strong></p>';
+				$warning .= '<p>To use the <strong>video</strong> method for the GIF player you need to install the "<strong>FFmpeg</strong>" library in your server.</p>';
+				$warning .= '<p><button class="button button-primary" style="margin-right: 10px;" onclick="WP_GP_PP_testFFmpeg(this)">Test FFmpeg</button>';
+				$warning .= '<a href="https://ffmpeg.org/download.html" target="_blank" class="button button-secondary">Download FFmpeg</a></p>';
+				$warning .= '<p class="description">If you don\'t know how to download and install FFmpeg ask your hosting support to do it.</p>';
+				$warning .= '</section>';
+
+				echo $warning;
+			}
+
 			echo '<form action="options.php" method="POST">';
 
 			settings_fields( self::ADMIN_PAGE );
@@ -166,9 +183,10 @@ if ( ! class_exists( 'WP_GP_PP_Options' ) ) {
 					'disabled' => $this->settings['ffmpeg_installed'] ? array() : array( 'video' ),
 				),
 				'ffmpeg_installed' => array(
-					'id'   => 'ffmpeg_installed',
-					'name' => 'ffmpeg_installed',
-					'type' => 'hidden',
+					'id'    => 'ffmpeg_installed',
+					'name'  => 'ffmpeg_installed',
+					'title' => '',
+					'type'  => 'hidden',
 				),
 			);
 		}
