@@ -86,9 +86,13 @@ if ( ! class_exists( 'WP_GP_PP_Options' ) ) {
 			);
 
 			foreach ( $this->settings() as $setting_id => $setting_data ) {
+				$label = isset( $setting_data['title'] )
+					? '<label for="' . $setting_id . '">' . $setting_data['title'] . '</label>'
+					: '';
+
 				add_settings_field(
 					'wp_gp_pp_setting_field_' . $setting_id,
-					'<label for="' . $setting_id . '">' . $setting_data['title'] . '</label>',
+					$label,
 					array( $this, 'generate_field' ),
 					self::ADMIN_PAGE,
 					'wp_gp_pp_section',
@@ -149,17 +153,22 @@ if ( ! class_exists( 'WP_GP_PP_Options' ) ) {
 		 */
 		private function settings() {
 			return array(
-				'gif_method' => array(
-					'id'      => 'gif_method',
-					'title'   => 'GIF Method',
-					'help'    => '',
-					'type'    => 'radio',
-					'name'    => 'gif_method',
-					'options' => array(
+				'gif_method'       => array(
+					'id'       => 'gif_method',
+					'name'     => 'gif_method',
+					'title'    => 'GIF Method',
+					'type'     => 'radio',
+					'options'  => array(
 						'gif'    => 'GIF',
 						'canvas' => 'Canvas',
 						'video'  => 'Video (Recommended)',
 					),
+					'disabled' => $this->settings['ffmpeg_installed'] ? array() : array( 'video' ),
+				),
+				'ffmpeg_installed' => array(
+					'id'   => 'ffmpeg_installed',
+					'name' => 'ffmpeg_installed',
+					'type' => 'hidden',
 				),
 			);
 		}
