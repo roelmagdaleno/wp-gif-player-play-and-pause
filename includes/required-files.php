@@ -10,6 +10,7 @@ require_once 'helpers.php';
 
 // HTML Classes
 require_once 'html/class-html-radio.php';
+require_once 'html/class-html-hidden.php';
 
 // Traits
 require_once 'traits/trait-thumbnail-creator.php';
