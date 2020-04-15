@@ -5,6 +5,68 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Verify if "ffmpeg" library is installed in the server.
+ *
+ * For now we have three validations:
+ *
+ * 1. Check if "shell_exec" function exists.
+ * 2. Check if current command belongs to "ffmpeg".
+ * 3. Check if "ffmpeg" library is installed.
+ *
+ * For the last step we are extracting the strings to compare
+ * the version string and if the version number is a real number.
+ *
+ * @since  0.1.0
+ *
+ * @return bool|WP_Error   Verify if "ffmpeg" library is installed in the server.
+ */
+function wp_gp_pp_is_ffmpeg_installed() {
+	$settings = WP_GP_PP::get_instance()->settings;
+
+	if ( isset( $settings['ffmpeg_installed'] ) && (bool) $settings['ffmpeg_installed'] ) {
+		return true;
+	}
+
+	$errors = array(
+		'no_shell_exec' => array(
+			'title'       => 'The "shell_exec" function is not enabled in your server.',
+			'description' => 'To use the "<strong>ffmpeg</strong>" command to <strong>convert GIF to Video</strong> you need to enable the "<strong>shell_exec</strong>" command in your PHP configuration.',
+		),
+		'no_command'    => array(
+			'title'       => 'The executed command does not belong to FFmpeg.',
+			'description' => 'The tested command does not belong to FFmpeg. Verify this plugin has not being edited and download it from the original source from <a href="https://github.com/roelmagdaleno/wp-gif-player-play-and-pause" target="_blank">GitHub</a> or WordPress.org.',
+		),
+		'not_installed' => array(
+			'title'       => 'Library "FFmpeg" not installed.',
+			'description' => 'To use the <strong>video</strong> method for the GIF player you need to install the "FFmpeg" library in your server.',
+		),
+	);
+
+	if ( ! function_exists( 'shell_exec' ) ) {
+		return new WP_Error( 'no_shell_exec', $errors['no_shell_exec']['title'], $errors['no_shell_exec'] );
+	}
+
+	$ffmpeg_test    = shell_exec( 'ffmpeg 2>&1' );
+	$ffmpeg_strings = explode( ' ', $ffmpeg_test );
+	$command        = $ffmpeg_strings[0];
+	$version_string = $ffmpeg_strings[1];
+	$version_number = (int) str_replace( '.', '', $ffmpeg_strings[2] );
+
+	if ( 'ffmpeg' !== $command ) {
+		return new WP_Error( 'no_command', $errors['no_command']['title'], $errors['no_command'] );
+	}
+
+	if ( 'version' !== $version_string || ! is_numeric( $version_number ) ) {
+		return new WP_Error( 'not_installed', $errors['not_installed']['title'], $errors['not_installed'] );
+	}
+
+	$settings['ffmpeg_installed'] = true;
+	update_option( 'wp_gp_pp_settings', $settings, 'no' );
+
+	return true;
+}
+
+/**
  * Whether WordPress is in DEBUG MODE.
  * This setting is configured in "wp-config.php" file.
  *
