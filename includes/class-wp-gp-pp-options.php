@@ -22,6 +22,16 @@ if ( ! class_exists( 'WP_GP_PP_Options' ) ) {
 		private $settings;
 
 		/**
+		 * Whether ffmpeg library is installed.
+		 *
+		 * @since  0.1.0
+		 * @access private
+		 *
+		 * @var    bool|WP_Error   $ffmpeg_installed   Whether ffmpeg library is installed.
+		 */
+		private $ffmpeg_installed;
+
+		/**
 		 * The plugin admin page slug.
 		 *
 		 * @since  0.1.0
@@ -47,8 +57,33 @@ if ( ! class_exists( 'WP_GP_PP_Options' ) ) {
 			$this->settings = WP_GP_PP::get_instance()->settings;
 
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
+			add_action( 'wp_ajax_wp_gp_pp_test_ffmpeg', array( $this, 'test_ffmpeg' ) );
 			add_action( 'admin_menu', array( $this, 'register_submenu' ) );
 			add_action( 'admin_init', array( $this, 'add_fields' ) );
+		}
+
+		/**
+		 * Test if "ffmpeg" command exists on the server using AJAX
+		 * request. We will send a JSON error if any ffmpeg is not installed
+		 * otherwise send a success message.
+		 *
+		 * @since 0.1.0
+		 */
+		public function test_ffmpeg() {
+			check_admin_referer( 'wp-gp-pp-gif-player' );
+
+			if ( (bool) $this->settings['ffmpeg_installed'] ) {
+				return;
+			}
+
+			$is_installed = wp_gp_pp_is_ffmpeg_installed();
+
+			is_wp_error( $is_installed )
+				? wp_send_json_error( $is_installed->get_error_data() )
+				: wp_send_json_success( array(
+					'title'       => 'Library "FFmpeg" is installed in your server.',
+					'description' => 'You can now convert GIF to Videos and use it in your posts and pages.',
+				) );
 		}
 
 		/**
@@ -64,7 +99,9 @@ if ( ! class_exists( 'WP_GP_PP_Options' ) ) {
 				return;
 			}
 
-			if ( wp_gp_pp_is_ffmpeg_installed() ) {
+			$this->ffmpeg_installed = wp_gp_pp_is_ffmpeg_installed();
+
+			if ( ! is_wp_error( $this->ffmpeg_installed ) ) {
 				return;
 			}
 
@@ -75,6 +112,11 @@ if ( ! class_exists( 'WP_GP_PP_Options' ) ) {
 				WP_GP_PP_VERSION,
 				true
 			);
+
+			wp_localize_script( 'wp-gp-pp.admin.js', 'WP_GP_PP_ADMIN', array(
+				'admin_url'  => admin_url( 'admin-ajax.php' ),
+				'ajax_nonce' => wp_create_nonce( 'wp-gp-pp-gif-player' ),
+			) );
 		}
 
 		/**
@@ -160,19 +202,21 @@ if ( ! class_exists( 'WP_GP_PP_Options' ) ) {
 				return;
 			}
 
-			ob_start();
-
 			echo '<h1>WP GIF Player - Play & Pause</h1>';
 
 			echo '<div class="wrap">';
 
-			if ( ! wp_gp_pp_is_ffmpeg_installed() ) {
-				$warning  = '<section class="notice notice-warning">';
-				$warning .= '<p><strong>Library "FFmpeg" not installed</strong></p>';
-				$warning .= '<p>To use the <strong>video</strong> method for the GIF player you need to install the "<strong>FFmpeg</strong>" library in your server.</p>';
-				$warning .= '<p><button class="button button-primary" style="margin-right: 10px;" onclick="WP_GP_PP_testFFmpeg(this)">Test FFmpeg</button>';
-				$warning .= '<a href="https://ffmpeg.org/download.html" target="_blank" class="button button-secondary">Download FFmpeg</a></p>';
-				$warning .= '<p class="description">If you don\'t know how to download and install FFmpeg ask your hosting support to do it.</p>';
+			if ( is_wp_error( $this->ffmpeg_installed ) ) {
+				$title       = $this->ffmpeg_installed->get_error_message();
+				$description = $this->ffmpeg_installed->get_error_data()['description'];
+
+				$warning  = '<section class="notice notice-warning" id="wp-gp-pp-admin-notice">';
+				$warning .= '<p class="wp-gp-pp-title"><strong>' . esc_html( $title ) . '</strong></p>';
+				$warning .= '<p class="wp-gp-pp-description">' . $description . '</p>';
+				$warning .= '<section class="wp-gp-pp-button-section"><p><button class="button button-primary" style="margin-right: 10px;" onclick="WP_GP_PP_testFFmpeg(this)">Test FFmpeg</button>';
+				$warning .= '<a href="https://ffmpeg.org/download.html" target="_blank" class="button button-secondary" style="display: inline-flex; align-items: center;">';
+				$warning .= 'Download FFmpeg <span class="dashicons dashicons-external" style="margin-left: 5px;"></span></a></p>';
+				$warning .= '<p class="description">If you don\'t know how to download and install FFmpeg ask your hosting support to do it.</p> </section>';
 				$warning .= '</section>';
 
 				echo $warning;
