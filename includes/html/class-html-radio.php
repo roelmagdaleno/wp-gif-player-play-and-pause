@@ -26,7 +26,7 @@ if ( ! class_exists( 'WP_GP_PP_HTML_Radio' ) ) {
 
 			foreach ( $options as $option_id => $option_text ) {
 				$search_disable = array_search( $option_id, $setting_data['disabled'], true );
-				$disabled       = ! $search_disable ? '' : $setting_data['disabled'][ $search_disable ];
+				$disabled       = ( false === $search_disable ) ? '' : $setting_data['disabled'][ $search_disable ];
 
 				$html .= '<label>';
 				$html .= '<input type="radio" id="' . esc_attr( $option_id ) . '" ';
