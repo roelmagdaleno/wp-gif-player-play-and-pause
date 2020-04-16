@@ -67,7 +67,7 @@ if ( ! class_exists( 'WP_GP_PP' ) ) {
 
 			new WP_GP_PP_Shortcode();
 			new WP_GP_PP_Gutenberg_Block();
-			new WP_GP_PP_Media_Uploader();
+			new WP_GP_PP_Media();
 
 			add_action( 'wp', array( $this, 'get_players_in_post' ) );
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );

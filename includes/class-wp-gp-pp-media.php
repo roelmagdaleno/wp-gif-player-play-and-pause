@@ -4,13 +4,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'WP_GP_PP_Media_Uploader' ) ) {
+if ( ! class_exists( 'WP_GP_PP_Media' ) ) {
 	/**
 	 * Handle all GIF media uploader and thumbnail creations.
 	 *
 	 * @since 0.1.0
 	 */
-	class WP_GP_PP_Media_Uploader {
+	class WP_GP_PP_Media {
 		// Includes the thumbnail and video functionality.
 		use WP_GP_PP_Thumbnail_Creator, WP_GP_PP_Video_Creator;
 
