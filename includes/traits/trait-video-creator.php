@@ -23,6 +23,12 @@ trait WP_GP_PP_Video_Creator {
 	 * @param string   $gif_link        The original GIF link (uploaded by the user).
 	 */
 	public function create_video_from_gif( $attachment_id, $gif_link ) {
+		$ffmpeg_installed = wp_gp_pp_is_ffmpeg_installed();
+
+		if ( is_wp_error( $ffmpeg_installed ) ) {
+			return;
+		}
+
 		$gif_path    = str_replace( home_url(), ABSPATH, $gif_link );
 		$video_types = $this->get_video_extensions_and_commands();
 
