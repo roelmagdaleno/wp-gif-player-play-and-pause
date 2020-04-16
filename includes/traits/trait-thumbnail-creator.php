@@ -156,7 +156,7 @@ trait WP_GP_PP_Thumbnail_Creator {
 	 */
 	private function get_thumbnail_path( $gif_link ) {
 		$jpg_link = str_replace( '.gif', '_gif_thumbnail.jpeg', $gif_link );
-		return str_replace( home_url(), ABSPATH, $jpg_link );
+		return str_replace( home_url( '/' ), ABSPATH, $jpg_link );
 	}
 
 	/**

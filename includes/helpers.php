@@ -328,12 +328,12 @@ function wp_gp_pp_get_video_mime_types() {
  * @since 0.1.0
  *
  * @param array    $new_attachment   The new attachment data.
- * @param string   $thumbnail_path   The GIF thumbnail path.
+ * @param string   $file             The GIF asset path.
  */
-function wp_gp_pp_insert_new_attachment( $new_attachment, $thumbnail_path ) {
+function wp_gp_pp_insert_new_attachment( $new_attachment, $file ) {
 	$new_attachment_id = wp_insert_attachment(
 		$new_attachment,
-		$thumbnail_path,
+		$file,
 		$new_attachment['post_parent']
 	);
 
@@ -349,6 +349,6 @@ function wp_gp_pp_insert_new_attachment( $new_attachment, $thumbnail_path ) {
 		require_once ABSPATH . 'wp-admin/includes/media.php';
 	}
 
-	$attachment_data = wp_generate_attachment_metadata( $new_attachment_id, $thumbnail_path );
+	$attachment_data = wp_generate_attachment_metadata( $new_attachment_id, $file );
 	wp_update_attachment_metadata( $new_attachment_id, $attachment_data );
 }

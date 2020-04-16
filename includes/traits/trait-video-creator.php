@@ -14,7 +14,6 @@ trait WP_GP_PP_Video_Creator {
 	 * WARNING:
 	 * You need "ffmpeg" library in your server so the the <video> can work.
 	 *
-	 * TODO: Add shell validation and check if ffmpeg is installed.
 	 * TODO: If the converted video doesn't have any size then delete it and don't store in DB.
 	 *
 	 * @since 0.1.0
@@ -29,7 +28,7 @@ trait WP_GP_PP_Video_Creator {
 			return;
 		}
 
-		$gif_path    = str_replace( home_url(), ABSPATH, $gif_link );
+		$gif_path    = str_replace( home_url( '/' ), ABSPATH, $gif_link );
 		$video_types = $this->get_video_extensions_and_commands();
 
 		foreach ( $video_types as $video_type => $video_command ) {
