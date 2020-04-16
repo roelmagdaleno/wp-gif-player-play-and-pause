@@ -60,7 +60,9 @@ function wp_gp_pp_is_ffmpeg_installed() {
 		return new WP_Error( 'not_installed', $errors['not_installed']['title'], $errors['not_installed'] );
 	}
 
-	$settings['ffmpeg_installed'] = true;
+	$settings['ffmpeg_installed']      = true;
+	WP_GP_PP::get_instance()->settings = $settings;
+
 	update_option( 'wp_gp_pp_settings', $settings, 'no' );
 
 	return true;
