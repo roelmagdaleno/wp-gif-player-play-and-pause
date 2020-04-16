@@ -209,6 +209,10 @@ if ( ! class_exists( 'WP_GP_PP' ) ) {
 		private function should_enqueue_assets() {
 			global $post;
 
+			if ( ! $post ) {
+				return false;
+			}
+
 			if ( has_shortcode( $post->post_content, 'gif-player' ) ) {
 				return true;
 			}
