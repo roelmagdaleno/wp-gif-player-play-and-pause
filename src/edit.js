@@ -32,9 +32,6 @@ const edit = ( { attributes, setAttributes, noticeOperations, noticeUI } ) => {
         align
     } = attributes;
 
-    const allowedTypes = 'image/gif';
-    const acceptImage  = 'image/gif';
-
     const onSelectImage = ( media ) => {
         setAttributes( {
             mediaID: media.id,
@@ -51,6 +48,9 @@ const edit = ( { attributes, setAttributes, noticeOperations, noticeUI } ) => {
         noticeOperations.removeAllNotices();
         noticeOperations.createErrorNotice( message );
     };
+
+    const accept       = 'image/gif';
+    const allowedTypes = ['image/gif'];
 
     return (
         <>
@@ -93,7 +93,7 @@ const edit = ( { attributes, setAttributes, noticeOperations, noticeUI } ) => {
                             mediaID = { mediaID }
                             mediaURL = { mediaURL }
                             allowedTypes = { allowedTypes }
-                            accept = { acceptImage }
+                            accept = { accept }
                             onSelect = { onSelectImage }
                         />
                     ) }
@@ -107,7 +107,7 @@ const edit = ( { attributes, setAttributes, noticeOperations, noticeUI } ) => {
                             className = { `align${align}` }
                         /> :
                         <MediaPlaceholder
-                            accept = { acceptImage }
+                            accept = { accept }
                             allowedTypes = { allowedTypes }
                             icon = 'format-video'
                             value = { mediaID }
