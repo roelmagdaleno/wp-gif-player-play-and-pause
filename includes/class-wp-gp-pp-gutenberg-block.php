@@ -80,7 +80,8 @@ if ( ! class_exists( 'WP_GP_PP_Gutenberg_Block' ) ) {
 			);
 
 			wp_localize_script( self::SCRIPT_HANDLE, 'WP_GIF_PLAYER', array(
-				'gifMethod' => $this->settings['gif_method'],
+				'gifMethod'       => $this->settings['gif_method'],
+				'ffmpegInstalled' => (bool) $this->settings['ffmpeg_installed'],
 			) );
 		}
 

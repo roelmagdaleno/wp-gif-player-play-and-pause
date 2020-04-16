@@ -64,7 +64,7 @@ const edit = ( { attributes, setAttributes, noticeOperations, noticeUI } ) => {
                                 options = { [
                                     { label: 'GIF', value: 'gif' },
                                     { label: 'Canvas', value: 'canvas' },
-                                    { label: 'Video', value: 'video' }
+                                    { label: 'Video', value: 'video', disabled: ! ( !! WP_GIF_PLAYER.ffmpegInstalled ) }
                                 ] }
                                 onChange = { ( gifMethod ) => setAttributes( { gifMethod } ) }
                             />
