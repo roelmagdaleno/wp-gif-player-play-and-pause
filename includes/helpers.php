@@ -334,7 +334,7 @@ function wp_gp_pp_insert_new_attachment( $new_attachment, $thumbnail_path ) {
 	$new_attachment_id = wp_insert_attachment(
 		$new_attachment,
 		$thumbnail_path,
-		$new_attachment['parent_id']
+		$new_attachment['post_parent']
 	);
 
 	if ( 0 === $new_attachment_id || is_wp_error( $new_attachment_id ) ) {
@@ -343,6 +343,10 @@ function wp_gp_pp_insert_new_attachment( $new_attachment, $thumbnail_path ) {
 
 	if ( ! function_exists( 'wp_generate_attachment_metadata' ) ) {
 		require_once ABSPATH . 'wp-admin/includes/image.php';
+	}
+
+	if ( ! function_exists( 'wp_read_video_metadata' ) ) {
+		require_once ABSPATH . 'wp-admin/includes/media.php';
 	}
 
 	$attachment_data = wp_generate_attachment_metadata( $new_attachment_id, $thumbnail_path );
