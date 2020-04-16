@@ -299,7 +299,7 @@ function wp_gp_pp_is_gif( $attachment_id ) {
  * @return string           The converted GIF/Image/Video url.
  */
 function wp_gp_pp_path_to_url( $path ) {
-	return str_replace( ABSPATH, home_url(), $path );
+	return str_replace( ABSPATH, home_url( '/' ), $path );
 }
 
 /**
