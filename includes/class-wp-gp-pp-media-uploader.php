@@ -39,12 +39,52 @@ if ( ! class_exists( 'WP_GP_PP_Media_Uploader' ) ) {
 		public function __construct() {
 			$this->settings = WP_GP_PP::get_instance()->settings;
 
+			add_action( 'delete_post', array( $this, 'delete_generated_assets' ) );
 			add_action( 'add_attachment', array( $this, 'pre_create_thumbnail_from_gif' ) );
 			add_action( 'save_post', array( $this, 'maybe_create_thumbnail_from_post' ), 10, 2 );
 			add_action( 'media_buttons', array( $this, 'add_uploader_gif_button' ) );
 			add_action( 'wp_enqueue_media', array( $this, 'add_gif_button_scripts' ) );
 			add_action( 'admin_post_wp_gp_pp_generate_gif_player', array( $this, 'create_gif_from_media_row' ) );
 			add_filter( 'media_row_actions', array( $this, 'add_row_actions' ), 10, 2 );
+		}
+
+		/**
+		 * Delete the generated assets like thumbnail and videos from
+		 * the uploads folder path and posts and postmeta database tables.
+		 *
+		 * @since 0.1.0
+		 *
+		 * @param int   $attachment_id   The current attachment id to delete.
+		 */
+		public function delete_generated_assets( $attachment_id ) {
+			global $wpdb;
+
+			if ( ! wp_gp_pp_is_gif( $attachment_id ) ) {
+				return;
+			}
+
+			$attachments = get_children( $attachment_id );
+
+			if ( empty( $attachments ) ) {
+				return;
+			}
+
+			$posts_ids = array();
+
+			foreach ( $attachments as $attachment ) {
+				$file = get_attached_file( $attachment->ID );
+
+				if ( ! file_exists( $file ) ) {
+					continue;
+				}
+
+				$posts_ids[] = $attachment->ID;
+				wp_delete_file( $file );
+			}
+
+			$ids = implode( ',', $posts_ids );
+			$wpdb->query( "DELETE FROM $wpdb->postmeta WHERE post_id IN($ids)" );
+			$wpdb->query( "DELETE FROM $wpdb->posts WHERE ID IN($ids)" );
 		}
 
 		/**
