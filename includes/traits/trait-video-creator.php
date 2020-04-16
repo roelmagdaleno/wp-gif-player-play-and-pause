@@ -40,6 +40,11 @@ trait WP_GP_PP_Video_Creator {
 
 			shell_exec( 'ffmpeg -i ' . $gif_path . ' ' . $video_command . ' ' . $video_path );
 
+			if ( 0 === filesize( $video_path ) ) {
+				wp_delete_file( $video_path );
+				continue;
+			}
+
 			$video_url      = wp_gp_pp_path_to_url( $video_path );
 			$file_type      = wp_check_filetype( $video_path );
 			$new_attachment = array(
