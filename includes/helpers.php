@@ -238,6 +238,10 @@ function wp_gp_pp_render_wrapper_for_video( $attachment ) {
 
 	$children = get_children( $args, ARRAY_A );
 
+	if ( empty( $children ) ) {
+		return '<p>For some reason the selected GIF was not converted to video format. Please, use the REPLACE option to select a new GIF.</p>';
+	}
+
 	$video  = '<div class="wp-gp-pp-container" style="width: ' . $width . 'px; height: ' . $height . 'px" ';
 	$video .= 'data-width="' . $width . '" data-height="' . $height . '" data-media-id="' . $attachment['attachment_id'] . '">';
 	$video .= '<video loop muted playsinline class="wp-gp-pp-video-player" ';
