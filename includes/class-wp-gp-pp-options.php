@@ -54,7 +54,8 @@ if ( ! class_exists( 'WP_GP_PP_Options' ) ) {
 		 * @since 0.1.0
 		 */
 		public function __construct() {
-			$this->settings = WP_GP_PP::get_instance()->settings;
+			$this->ffmpeg_installed = wp_gp_pp_is_ffmpeg_installed();
+			$this->settings         = WP_GP_PP::get_instance()->settings;
 
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
 			add_action( 'wp_ajax_wp_gp_pp_test_ffmpeg', array( $this, 'test_ffmpeg' ) );
@@ -98,8 +99,6 @@ if ( ! class_exists( 'WP_GP_PP_Options' ) ) {
 			if ( 'settings_page_wp-gif-player' !== $hook_sufix ) {
 				return;
 			}
-
-			$this->ffmpeg_installed = wp_gp_pp_is_ffmpeg_installed();
 
 			if ( ! is_wp_error( $this->ffmpeg_installed ) ) {
 				return;
