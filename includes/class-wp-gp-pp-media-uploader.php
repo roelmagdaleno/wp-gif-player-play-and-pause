@@ -40,7 +40,7 @@ if ( ! class_exists( 'WP_GP_PP_Media_Uploader' ) ) {
 			$this->settings = WP_GP_PP::get_instance()->settings;
 
 			add_action( 'add_attachment', array( $this, 'pre_create_thumbnail_from_gif' ) );
-			add_action( 'save_post', array( $this, 'maybe_create_thumbnail_from_gif' ), 10, 2 );
+			add_action( 'save_post', array( $this, 'maybe_create_thumbnail_from_post' ), 10, 2 );
 			add_action( 'media_buttons', array( $this, 'add_uploader_gif_button' ) );
 			add_action( 'wp_enqueue_media', array( $this, 'add_gif_button_scripts' ) );
 			add_action( 'admin_post_wp_gp_pp_generate_gif_player', array( $this, 'create_gif_from_media_row' ) );
