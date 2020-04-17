@@ -82,6 +82,10 @@ if ( ! class_exists( 'WP_GP_PP_Media' ) ) {
 				wp_delete_file( $file );
 			}
 
+			if ( empty( $posts_ids ) ) {
+				return;
+			}
+
 			$ids = implode( ',', $posts_ids );
 			$wpdb->query( "DELETE FROM $wpdb->postmeta WHERE post_id IN($ids)" );
 			$wpdb->query( "DELETE FROM $wpdb->posts WHERE ID IN($ids)" );
