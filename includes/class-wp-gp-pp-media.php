@@ -190,7 +190,7 @@ if ( ! class_exists( 'WP_GP_PP_Media' ) ) {
 
 			wp_enqueue_script(
 				'wp-gp-pp-media-button.js',
-				plugins_url( 'assets/js/media-button.js', __DIR__ ),
+				plugins_url( 'admin/js/media-button.js', __DIR__ ),
 				null,
 				WP_GP_PP_VERSION,
 				$in_footer

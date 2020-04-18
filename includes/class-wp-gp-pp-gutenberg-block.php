@@ -74,7 +74,7 @@ if ( ! class_exists( 'WP_GP_PP_Gutenberg_Block' ) ) {
 
 			wp_enqueue_script(
 				self::SCRIPT_HANDLE,
-				plugins_url( 'assets/js/wp-gp-pp.block.js', __DIR__ ),
+				plugins_url( 'admin/js/wp-gp-pp.block.js', __DIR__ ),
 				array( 'wp-blocks', 'wp-editor', 'wp-element' ),
 				WP_GP_PP_VERSION
 			);

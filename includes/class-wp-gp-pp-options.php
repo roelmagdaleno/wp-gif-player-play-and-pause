@@ -106,7 +106,7 @@ if ( ! class_exists( 'WP_GP_PP_Options' ) ) {
 
 			wp_enqueue_script(
 				'wp-gp-pp.admin.js',
-				plugins_url( 'assets/js/wp-gp-pp.admin.js', __DIR__ ),
+				plugins_url( 'admin/js/wp-gp-pp.admin.js', __DIR__ ),
 				null,
 				WP_GP_PP_VERSION,
 				true
