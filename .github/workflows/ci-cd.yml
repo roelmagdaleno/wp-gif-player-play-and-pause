@@ -26,4 +26,4 @@ jobs:
 
     steps:
       - name: Run Code Quality Tests
-        run: vendor/bin/grumphp run
+        run: grumphp run
