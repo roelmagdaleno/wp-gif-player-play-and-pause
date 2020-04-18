@@ -54,7 +54,7 @@ function wp_gp_pp_is_ffmpeg_installed() {
 		return new WP_Error( 'no_shell_exec', $errors['no_shell_exec']['title'], $errors['no_shell_exec'] );
 	}
 
-	$ffmpeg_test    = shell_exec( 'ffmpeg 2>&1' );
+	$ffmpeg_test    = shell_exec( 'ffmpeg 2>&1' ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions
 	$ffmpeg_strings = explode( ' ', $ffmpeg_test );
 	$command        = $ffmpeg_strings[0];
 	$version_string = $ffmpeg_strings[1];
@@ -116,7 +116,7 @@ function wp_gp_pp_test_example_video() {
 	foreach ( $video_types as $video_type => $video_command ) {
 		$video_path = str_replace( '.gif', $video_type, $gif_path );
 
-		shell_exec( 'ffmpeg -i ' . $gif_path . ' ' . $video_command . ' ' . $video_path );
+		shell_exec( 'ffmpeg -i ' . $gif_path . ' ' . $video_command . ' ' . $video_path ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions
 
 		if ( ! file_exists( $video_path ) ) {
 			continue;

@@ -36,7 +36,7 @@ trait WP_GP_PP_Video_Creator {
 				continue;
 			}
 
-			shell_exec( 'ffmpeg -i ' . $gif_path . ' ' . $video_command . ' ' . $video_path );
+			shell_exec( 'ffmpeg -i ' . $gif_path . ' ' . $video_command . ' ' . $video_path ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions
 
 			if ( 0 === filesize( $video_path ) ) {
 				wp_delete_file( $video_path );

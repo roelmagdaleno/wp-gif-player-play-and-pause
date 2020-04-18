@@ -19,6 +19,8 @@ trait WP_GP_PP_Thumbnail_Creator {
 	 *
 	 * @param int       $post_id   The current post id.
 	 * @param WP_Post   $post      The current post data.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
 	 */
 	public function maybe_create_thumbnail_from_post( $post_id, $post ) {
 		if ( ! has_shortcode( $post->post_content, 'gif-player' ) ) {

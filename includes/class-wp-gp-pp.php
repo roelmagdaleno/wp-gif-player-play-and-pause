@@ -90,7 +90,7 @@ if ( ! class_exists( 'WP_GP_PP' ) ) {
 		 * @since  0.1.0
 		 *
 		 * @param  array    $actions        An array of plugin action links.
-		 * @param  string   $plugin_file   	Path to the plugin file relative to the plugins directory.
+		 * @param  string   $plugin_file    Path to the plugin file relative to the plugins directory.
 		 * @return array                    The plugin action links with Settings for our plugin.
 		 */
 		public function add_settings_action_link( $actions, $plugin_file ) {
@@ -165,7 +165,7 @@ if ( ! class_exists( 'WP_GP_PP' ) ) {
 
 			delete_transient( 'wp_gp_pp_admin_notice' );
 
-			echo $message;
+			echo $message; // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
 		}
 
 		/**
@@ -210,10 +210,12 @@ if ( ! class_exists( 'WP_GP_PP' ) ) {
 				$in_footer
 			);
 
-			wp_localize_script( $script_handle, 'WP_GIF_PLAYER', array(
+			$js_values = array(
 				'defaultGifPlayer' => $this->settings['gif_method'],
 				'gifPlayersInPost' => $this->players_in_post,
-			) );
+			);
+
+			wp_localize_script( $script_handle, 'WP_GIF_PLAYER', $js_values );
 		}
 
 		/**
@@ -280,12 +282,11 @@ if ( ! class_exists( 'WP_GP_PP' ) ) {
 		 * The block name belongs to ours and if "gifMethod" exists in the attributes.
 		 *
 		 * @since  0.1.0
-		 * @access private
 		 *
 		 * @param  array   $block   The current block in the post.
 		 * @return bool             The "gif-player" block data.
 		 */
-		private function get_our_gif_player_blocks( $block ) {
+		public function get_our_gif_player_blocks( $block ) {
 			return WP_GP_PP_GUTENBERG_NAMESPACE === $block['blockName'] && isset( $block['attrs']['gifMethod'] );
 		}
 	}

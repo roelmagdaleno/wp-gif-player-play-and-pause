@@ -86,9 +86,11 @@ if ( ! class_exists( 'WP_GP_PP_Media' ) ) {
 				return;
 			}
 
-			$ids = implode( ',', $posts_ids );
-			$wpdb->query( "DELETE FROM $wpdb->postmeta WHERE post_id IN($ids)" );
-			$wpdb->query( "DELETE FROM $wpdb->posts WHERE ID IN($ids)" );
+			$placeholder = implode( ',', array_fill( 0, count( $posts_ids ), '%d' ) );
+
+			// phpcs:disable
+			$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->postmeta WHERE post_id IN($placeholder)", $posts_ids ) );
+			$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->posts WHERE ID IN($placeholder)", $posts_ids ) );
 		}
 
 		/**
@@ -98,13 +100,17 @@ if ( ! class_exists( 'WP_GP_PP_Media' ) ) {
 		 * otherwise won't do anything.
 		 *
 		 * @since 0.1.0
+		 *
+		 * @SuppressWarnings(PHPMD.ExitExpression)
 		 */
 		public function create_gif_from_media_row() {
 			if ( ! wp_verify_nonce( $_GET['gif_player'], 'wp_gp_pp_generate_gif_player' ) || ! isset( $_GET['post_id'] ) ) {
-				set_transient( 'wp_gp_pp_admin_notice', array(
+				$message = array(
 					'type'    => 'error',
 					'message' => 'You cannot generate the GIF player for security reasons.',
-				) );
+				);
+
+				set_transient( 'wp_gp_pp_admin_notice', $message );
 
 				wp_safe_redirect( wp_get_referer() );
 				exit;
@@ -112,10 +118,12 @@ if ( ! class_exists( 'WP_GP_PP_Media' ) ) {
 
 			$this->pre_create_thumbnail_from_gif( $_GET['post_id'] );
 
-			set_transient( 'wp_gp_pp_admin_notice', array(
+			$message = array(
 				'type'    => 'success',
 				'message' => 'The GIF player assets for the selected GIF was successfully created.',
-			) );
+			);
+
+			set_transient( 'wp_gp_pp_admin_notice', $message );
 
 			wp_safe_redirect( wp_get_referer() );
 			exit;

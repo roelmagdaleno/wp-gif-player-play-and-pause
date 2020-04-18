@@ -72,17 +72,22 @@ if ( ! class_exists( 'WP_GP_PP_Gutenberg_Block' ) ) {
 				WP_GP_PP_VERSION
 			);
 
+			$in_footer = true;
+
 			wp_enqueue_script(
 				self::SCRIPT_HANDLE,
 				plugins_url( 'admin/js/wp-gp-pp.block.js', __DIR__ ),
 				array( 'wp-blocks', 'wp-editor', 'wp-element' ),
-				WP_GP_PP_VERSION
+				WP_GP_PP_VERSION,
+				$in_footer
 			);
 
-			wp_localize_script( self::SCRIPT_HANDLE, 'WP_GIF_PLAYER', array(
+			$js_values = array(
 				'gifMethod'       => $this->settings['gif_method'],
 				'ffmpegInstalled' => (bool) $this->settings['ffmpeg_installed'],
-			) );
+			);
+
+			wp_localize_script( self::SCRIPT_HANDLE, 'WP_GIF_PLAYER', $js_values );
 		}
 
 		/**
@@ -96,7 +101,7 @@ if ( ! class_exists( 'WP_GP_PP_Gutenberg_Block' ) ) {
 		 * @since 0.1.0
 		 */
 		public function register_block() {
-			register_block_type( WP_GP_PP_GUTENBERG_NAMESPACE, array(
+			$args = array(
 				'editor_script'   => self::SCRIPT_HANDLE,
 				'render_callback' => array( $this, 'render_gif_player' ),
 				'attributes'      => array(
@@ -123,10 +128,12 @@ if ( ! class_exists( 'WP_GP_PP_Gutenberg_Block' ) ) {
 						'type' => 'number',
 					),
 					'align'       => array(
-						'type' => 'string'
+						'type' => 'string',
 					),
 				),
-			) );
+			);
+
+			register_block_type( WP_GP_PP_GUTENBERG_NAMESPACE, $args );
 		}
 
 		/**

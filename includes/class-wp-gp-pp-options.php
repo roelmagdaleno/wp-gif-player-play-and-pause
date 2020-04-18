@@ -77,14 +77,15 @@ if ( ! class_exists( 'WP_GP_PP_Options' ) ) {
 				return;
 			}
 
-			$is_installed = wp_gp_pp_is_ffmpeg_installed();
+			$is_installed    = wp_gp_pp_is_ffmpeg_installed();
+			$success_message = array(
+				'title'       => 'Library "FFmpeg" is installed in your server.',
+				'description' => 'You can now convert GIF to Videos and use it in your posts and pages.',
+			);
 
 			is_wp_error( $is_installed )
 				? wp_send_json_error( $is_installed->get_error_data() )
-				: wp_send_json_success( array(
-					'title'       => 'Library "FFmpeg" is installed in your server.',
-					'description' => 'You can now convert GIF to Videos and use it in your posts and pages.',
-				) );
+				: wp_send_json_success( $success_message );
 		}
 
 		/**
@@ -112,10 +113,12 @@ if ( ! class_exists( 'WP_GP_PP_Options' ) ) {
 				true
 			);
 
-			wp_localize_script( 'wp-gp-pp.admin.js', 'WP_GP_PP_ADMIN', array(
+			$js_values = array(
 				'admin_url'  => admin_url( 'admin-ajax.php' ),
 				'ajax_nonce' => wp_create_nonce( 'wp-gp-pp-gif-player' ),
-			) );
+			);
+
+			wp_localize_script( 'wp-gp-pp.admin.js', 'WP_GP_PP_ADMIN', $js_values );
 		}
 
 		/**
@@ -185,7 +188,7 @@ if ( ! class_exists( 'WP_GP_PP_Options' ) ) {
 			$setting_data['current'] = $this->settings[ $setting_data['id'] ] ?? '';
 
 			$class = 'WP_GP_PP_HTML_' . ucfirst( $setting_data['type'] );
-			echo ( new $class() )->render( $setting_data );
+			echo ( new $class() )->render( $setting_data ); // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
 		}
 
 		/**
@@ -218,7 +221,7 @@ if ( ! class_exists( 'WP_GP_PP_Options' ) ) {
 				$warning .= '<p class="description">If you don\'t know how to download and install FFmpeg ask your hosting support to do it.</p> </section>';
 				$warning .= '</section>';
 
-				echo $warning;
+				echo $warning; // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
 			}
 
 			echo '<form action="options.php" method="POST">';
