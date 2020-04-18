@@ -1,5 +1,5 @@
 {
-  "name": "wp-gif-player-play-and-pause",
+  "name": "roelmagdaleno/wp-gif-player-play-and-pause",
   "description": "Insert GIFs that can be played and paused into your WordPress posts and pages using shortcodes and Gutenberg blocks.",
   "license": "GPL-3.0-or-later",
   "require-dev": {
