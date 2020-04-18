@@ -77,8 +77,29 @@ if ( ! class_exists( 'WP_GP_PP' ) ) {
 			}
 
 			add_action( 'admin_notices', array( $this, 'show_admin_notices' ) );
+			add_filter( 'plugin_action_links', array( $this, 'add_settings_action_link' ), 10, 2 );
+			add_filter( 'network_admin_plugin_action_links', array( $this, 'add_settings_action_link' ), 10, 2 );
 
 			new WP_GP_PP_Options();
+		}
+
+		/**
+		 * Add the "Settings" action link to our plugin inside
+		 * of the plugins table.
+		 *
+		 * @since  0.1.0
+		 *
+		 * @param  array    $actions        An array of plugin action links.
+		 * @param  string   $plugin_file   	Path to the plugin file relative to the plugins directory.
+		 * @return array                    The plugin action links with Settings for our plugin.
+		 */
+		public function add_settings_action_link( $actions, $plugin_file ) {
+			if ( false !== strpos( $plugin_file, 'wp-gif-player-play-and-pause.php' ) ) {
+				$url                 = admin_url( 'options-general.php?page=wp-gif-player' );
+				$actions['settings'] = '<a href="' . esc_attr( $url ) . '">Settings</a>';
+			}
+
+			return $actions;
 		}
 
 		/**
