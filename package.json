@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "minify": "terser assets/js/wp-gp-pp.js --compress --mangle --output assets/js/wp-gp-pp.min.js",
-    "start": "node_modules/.bin/wp-scripts start src/wp-gp-pp.block.js  --output-path=assets/js",
-    "build": "node_modules/.bin/wp-scripts build src/wp-gp-pp.block.js  --output-path=assets/js"
+    "start": "node_modules/.bin/wp-scripts start src/wp-gp-pp.block.js  --output-path=admin/js",
+    "build": "node_modules/.bin/wp-scripts build src/wp-gp-pp.block.js  --output-path=admin/js"
   },
   "repository": {
     "type": "git",

@@ -40,6 +40,14 @@ function wp_gp_pp_is_ffmpeg_installed() {
 			'title'       => 'Library "FFmpeg" not installed.',
 			'description' => 'To use the <strong>video</strong> method for the GIF player you need to install the "FFmpeg" library in your server.',
 		),
+		'no_example'    => array(
+			'title'       => 'The example.gif file to test the FFmpeg video conversion does not exists.',
+			'description' => 'The "admin/images/example.gif" file is missing. Download the plugin again and be sure the file exists.',
+		),
+		'not_working'   => array(
+			'title'       => 'The FFmpeg library is not working as expected.',
+			'description' => 'Check and fix your FFmpeg configuration in your server and run the library test again.',
+		),
 	);
 
 	if ( ! function_exists( 'shell_exec' ) ) {
@@ -60,12 +68,70 @@ function wp_gp_pp_is_ffmpeg_installed() {
 		return new WP_Error( 'not_installed', $errors['not_installed']['title'], $errors['not_installed'] );
 	}
 
+	$test = wp_gp_pp_test_example_video();
+
+	if ( ! $test['success'] ) {
+		return new WP_Error( $test['code'], $errors[ $test['code'] ]['title'], $errors[ $test['code'] ] );
+	}
+
 	$settings['ffmpeg_installed']      = true;
 	WP_GP_PP::get_instance()->settings = $settings;
 
 	update_option( 'wp_gp_pp_settings', $settings, 'no' );
 
 	return true;
+}
+
+/**
+ * Test the FFmpeg library by converting the example.gif file
+ * in webm and mp4 formats.
+ *
+ * Our example.gif file path is "admin/images/example.gif".
+ *
+ * The generated videos will be deleted from our plugin to not grow
+ * the plugin size.
+ *
+ * @since  0.1.0
+ *
+ * @return array   Whether the ffmpeg test was success or not. Includes the error code if fails.
+ */
+function wp_gp_pp_test_example_video() {
+	$gif_path = WP_GP_PP_PLUGIN_PATH . 'admin/images/example.gif';
+	$response = array(
+		'success' => false,
+		'code'    => 'not_working',
+	);
+
+	if ( ! file_exists( $gif_path ) ) {
+		$response['code'] = 'no_example';
+		return $response;
+	}
+
+	$video_paths = array();
+	$video_types = array(
+		'.webm' => '-c vp9 -b:v 0 -crf 41',
+		'.mp4'  => '-b:v 0 -crf 25 -f mp4 -vcodec libx264 -pix_fmt yuv420p',
+	);
+
+	foreach ( $video_types as $video_type => $video_command ) {
+		$video_path = str_replace( '.gif', $video_type, $gif_path );
+
+		shell_exec( 'ffmpeg -i ' . $gif_path . ' ' . $video_command . ' ' . $video_path );
+
+		if ( ! file_exists( $video_path ) ) {
+			continue;
+		}
+
+		if ( 0 === filesize( $video_path ) ) {
+			wp_delete_file( $video_path );
+			continue;
+		}
+
+		$video_paths[] = $video_path;
+		wp_delete_file( $video_path );
+	}
+
+	return empty( $video_paths ) ? $response : array( 'success' => true );
 }
 
 /**

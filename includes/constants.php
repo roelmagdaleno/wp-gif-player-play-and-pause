@@ -19,6 +19,13 @@ define( 'WP_GP_PP_VERSION', '0.1.0' );
 define( 'WP_GP_PP_PLUGIN_FILE', dirname( __DIR__ ) . '/wp-gif-player-play-and-pause.php' );
 
 /**
+ * The plugin path directory.
+ *
+ * @since 0.1.0
+ */
+define( 'WP_GP_PP_PLUGIN_PATH', plugin_dir_path( __DIR__ ) );
+
+/**
  * The Gutenberg block namespace.
  *
  * @since 0.1.0

@@ -14,8 +14,6 @@ trait WP_GP_PP_Video_Creator {
 	 * WARNING:
 	 * You need "ffmpeg" library in your server so the the <video> can work.
 	 *
-	 * TODO: If the converted video doesn't have any size then delete it and don't store in DB.
-	 *
 	 * @since 0.1.0
 	 *
 	 * @param int      $attachment_id   The current attachment id.
