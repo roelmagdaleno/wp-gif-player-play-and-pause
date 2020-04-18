@@ -1,0 +1,18 @@
+parameters:
+  process_timeout: 120
+  tasks:
+    shell:
+      scripts:
+        - ["-c", "./vendor/bin/phpcs --config-set installed_paths ../../wp-coding-standards/wpcs/"]
+      metadata:
+        priority: 1
+    phpcpd:
+      exclude: ["admin", "vendor", "node_modules", "src"]
+    phpcs:
+      standard: "WordPress-Extra"
+      ignore_patterns: ["admin", "vendor", "node_modules", "src"]
+    phpmd:
+      exclude: ["admin", "vendor", "node_modules", "src"]
+      ruleset: ["codesize", "design", "unusedcode"]
+    phplint:
+      exclude: ["admin", "vendor", "node_modules", "src"]
