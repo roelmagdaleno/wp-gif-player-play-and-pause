@@ -3,7 +3,7 @@
 /**
  * Plugin Name: WP GIF Player - Play & Pause
  * Plugin URI:  https://roelmagdaleno.com
- * Description: Attach GIF players into your posts and pages.
+ * Description: Insert GIFs that can be played and paused into your WordPress posts and pages using shortcodes and Gutenberg blocks.
  * Version:     0.1.0
  * Author:      Roel Magdaleno
  * Author URI:  https://roelmagdaleno.com
