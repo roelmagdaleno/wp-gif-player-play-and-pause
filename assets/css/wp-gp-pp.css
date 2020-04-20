@@ -51,3 +51,12 @@
 .wp-gp-pp-gif {
     display: none;
 }
+
+@media only screen and (max-width: 500px) {
+    .wp-gp-pp-container,
+    .wp-gp-pp-video-player,
+    .wp-gp-pp-container .jsgif canvas {
+        width: 100% !important;
+        height: unset !important;
+    }
+}
