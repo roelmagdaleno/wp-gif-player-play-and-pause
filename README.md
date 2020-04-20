@@ -2,44 +2,40 @@
 
 Insert GIFs that can be played and paused into your WordPress posts and pages using shortcodes and Gutenberg blocks.
 
-## How it works?
+## GIF Methods
 
-Every GIF stored in your Media Library can be used as a GIF player in your posts and pages but to make it work the plugin need to generate the next assets:
+You can select one of the three GIF player methods in the plugin options page.
 
-**THUMBNAIL**
+### GIF
 
-The plugin will obtain the first frame image from the current GIF and use it as a thumbnail preview for the GIF Player.
+This is the default method.
 
-**VIDEOS**
-_(Only for video GIF method)_
+When a GIF is uploaded in your Media Library it will create an image thumbnail to use it as the GIF player preview and when the user clicks on the GIF player the original GIF will be loaded once.
 
-When the user select the **GIF Method as video** the plugin will generate by default two video formats from the GIF.
+### Canvas
 
-These video formats are:
+With this method every GIF will be loaded in your post and then converted into a [playable canvas](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API). A thumbnail image is created as well when uploading the GIF in your Media Library.
 
-- WebM
-- MP4
+For this process we're using the [libgif.js](https://github.com/buzzfeed/libgif-js) JavaScript library by BuzzFeed.
 
-To do that we use the **FFmpeg library** and `shell_exec` PHP function, so it is necessary to have them installed in your server.
+### Video (Recommended)
 
-_If you don't know how to install those tools contact your hosting support to do it._
+Every GIF file will be converted to these video formats:
 
-You can add more video methods and update the FFmpeg commands using the custom filter.
-Check the wiki for more details.
+* WebM
+* MP4
 
-Those generated assets will be attached into your Media Library and their parent will be the original GIF attachment.
+Why videos?
 
-After generating the previous assets you can now insert the GIF player in your post or page using a shortcode or a Gutenberg block.
+It is known that GIF files sizes are bigger than a video so using a video instead of a GIF file [will help your website performance](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/replace-animated-gifs-with-video).
 
-## What if already have a GIF in my Media Library?
+Want more details about converting GIF to video? [Check the GIF as Video wiki](https://github.com/roelmagdaleno/wp-gif-player-play-and-pause/wiki/GIF-as-Video).
 
-For those GIF files that are already uploaded in your Media Library you can generate the assets in one click.
+## Thumbnail Preview
 
-You just have to go to your Media Library section and see the media files as list then hover the GIF you want to generate the assets and click "**Generate GIF Player**" option:
+The plugin will grab the GIF file and extract the first frame as JPEG image and use it as thumbnail preview. This file will be saved in the same folder of the original GIF.
 
-![](https://i.imgur.com/qlCzG9C.png)
-
-You should see an admin notice after success or fail assets generation.
+The thumbnail image always generate once and doesn't matter the selected GIF method.
 
 ## Shortcode
 
@@ -49,7 +45,7 @@ If you're still using the WordPress Classic Editor you must use the next shortco
 [gif-player id="gif_id"]
 ```
 
-If you don't know the GIF ID you can add a GIF player using the "**Add GIF Player**" button next to the "**Add Media**" button.
+If you don't know the GIF ID you can add a GIF player using the "**Add GIF Player**" button next to the "**Add Media**" button:
 
 ![](https://i.imgur.com/zWPjTtO.png)
 
@@ -59,26 +55,30 @@ When you save and view the post, the plugin will render the GIF Player according
 
 ## Gutenberg Block
 
-You can use the GIF Player as a Gutenberg block and you can find it inside of the **Common Blocks** section as **GIF Player**.
+You can use the GIF Player as a Gutenberg block. [Check the wiki for more details](https://github.com/roelmagdaleno/wp-gif-player-play-and-pause/wiki/Gutenberg-Block).
 
-![](https://i.imgur.com/0fGzT4K.png)
+## FAQ
 
-When you insert the GIF Player another block with two buttons will show:
+### What if already have a GIF in my Media Library?
 
-![](https://i.imgur.com/6A3c8kU.png)
+For those GIF files that are already uploaded in your Media Library you can generate the assets in one click.
 
-**UPLOAD**
+You just have to go to your Media Library section and **see the media files as list** then hover the GIF you want to generate the assets and click "**Generate GIF Player**" option:
 
-The upload button will open your system directory to select a GIF file.
+![](https://i.imgur.com/qlCzG9C.png)
 
-**MEDIA LIBRARY**
+You should see an admin notice after success or fail assets generation.
 
-This button will open the Media Library window to select a GIF from your uploaded files.
+### What libraries or tools do I need to use GIF players as video?
 
-When you finally add a GIF using the Gutenberg block you should be able to see the GIF player:
+To use the GIF Player as video you need two things:
 
-![](https://i.imgur.com/Lu6MhR2.png)
+* **FFMpeg library**. This is the library to convert the GIF files to video format.
 
-But this won't be playable in the editor. Only in the frontend.
+* **shell_exec**. A PHP function to run the ffmpeg command.
 
-Check the wiki for more details about replacing the GIF, choose another GIF method and more.
+[Check the GIF as Video wiki](https://github.com/roelmagdaleno/wp-gif-player-play-and-pause/wiki/GIF-as-Video) for more details.
+
+### What video formats does the GIF convert to?
+
+By default the plugin **converts the GIF to WebM and MP4** but you can add more [using the custom filters](https://github.com/roelmagdaleno/wp-gif-player-play-and-pause/wiki/Hooks).

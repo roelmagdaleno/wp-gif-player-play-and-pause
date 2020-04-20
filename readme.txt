@@ -13,32 +13,38 @@ Insert GIFs that can be played and paused into your WordPress posts and pages us
 
 == Description ==
 
-Insert GIFs that can be played and paused into your WordPress posts and pages using shortcodes and Gutenberg blocks.
+You can select one of the three GIF player methods in the plugin options page.
 
-The GIF player can be one of the three methods in the plugin:
+### GIF
 
-**GIF**
+This is the default method.
 
-It will show the thumbnail preview and will load the GIF after click the player.
+When a GIF is uploaded in your Media Library it will create an image thumbnail to use it as the GIF player preview and when the user clicks on the GIF player the original GIF will be loaded once.
 
-**Canvas**
+### Canvas
 
-Adds the GIF player as HTML5 Canvas.
-The GIF file will be transformed to HTML5 Canvas by using a JavaScript library.
+With this method every GIF will be loaded in your post and then converted into a [playable canvas](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API). A thumbnail image is created as well when uploading the GIF in your Media Library.
 
-**Video (Recommended - Only for video GIF method)**
+For this process we're using the [libgif.js](https://github.com/buzzfeed/libgif-js) JavaScript library by BuzzFeed.
 
-Insert the GIF player as video.
-This method is the recommended one because some GIF files sizes are bigger than the converted video.
+### Video (Recommended)
 
-The video formats we use are:
+Every GIF file will be converted to these video formats:
 
-- WebM
-- MP4
+* WebM
+* MP4
 
-**To enable the "video" GIF method you need the "FFmpeg" library and `shell_exec` PHP function installed in your server.**
+Why videos?
 
-For more detailed information go to the [GitHub Repository](https://github.com/roelmagdaleno/wp-gif-player-play-and-pause).
+It is known that GIF files sizes are bigger than a video so using a video instead of a GIF file [will help your website performance](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/replace-animated-gifs-with-video).
+
+Want more details about converting GIF to video? [Check the GIF as Video wiki](https://github.com/roelmagdaleno/wp-gif-player-play-and-pause/wiki/GIF-as-Video).
+
+== Thumbnail Preview ==
+
+The plugin will grab the GIF file and extract the first frame as JPEG image and use it as thumbnail preview. This file will be saved in the same folder of the original GIF.
+
+The thumbnail image always generate once and doesn't matter the selected GIF method.
 
 == Shortcode ==
 
@@ -54,23 +60,7 @@ When you save and view the post, the plugin will render the GIF Player according
 
 == Gutenberg Block ==
 
-You can use the GIF Player as a Gutenberg block and you can find it inside of the **Common Blocks** section as **GIF Player**.
-
-When you insert the GIF Player another block with two buttons will show:
-
-**UPLOAD**
-
-The upload button will open your system directory to select a GIF file.
-
-**MEDIA LIBRARY**
-
-This button will open the Media Library window to select a GIF from your uploaded files.
-
-When you finally add a GIF using the Gutenberg block you should be able to see the GIF player.
-
-But this won't be playable in the editor. Only in the frontend.
-
-For more detailed information go to the [GitHub Repository](https://github.com/roelmagdaleno/wp-gif-player-play-and-pause).
+You can use the GIF Player as a Gutenberg block. [Check the wiki for more details](https://github.com/roelmagdaleno/wp-gif-player-play-and-pause/wiki/Gutenberg-Block).
 
 == Installation ==
 
@@ -92,17 +82,15 @@ You should see an admin notice after success or fail assets generation.
 
 To use the GIF Player as video you need two things:
 
-**FFMpeg library**.
-This is the library to convert the GIF files to video format.
+* **FFMpeg library**. This is the library to convert the GIF files to video format.
 
-**shell_exec** PHP function.
-Some servers have disabled this function due to security reasons.
+* **shell_exec**. A PHP function to run the ffmpeg command.
 
-If you don't know how to install those tools contact your hosting support to do it.
+[Check the GIF as Video wiki](https://github.com/roelmagdaleno/wp-gif-player-play-and-pause/wiki/GIF-as-Video) for more details.
 
 = What video formats does the GIF convert to? =
 
-By default the plugin converts the GIF to WebM and MP4 but you can add more using the custom filters.
+By default the plugin **converts the GIF to WebM and MP4** but you can add more [using the custom filters](https://github.com/roelmagdaleno/wp-gif-player-play-and-pause/wiki/Hooks).
 
 == Screenshots ==
 
