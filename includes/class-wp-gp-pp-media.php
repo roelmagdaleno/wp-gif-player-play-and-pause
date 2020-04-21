@@ -99,34 +99,29 @@ if ( ! class_exists( 'WP_GP_PP_Media' ) ) {
 		 * We have to verify nonces and be sure the attachment (post) id exists
 		 * otherwise won't do anything.
 		 *
-		 * @since 0.1.0
+		 * Also need to check if the current post id belongs to a valid attachment.
 		 *
-		 * @SuppressWarnings(PHPMD.ExitExpression)
+		 * @since 0.1.0
 		 */
 		public function create_gif_from_media_row() {
 			if ( ! wp_verify_nonce( $_GET['gif_player'], 'wp_gp_pp_generate_gif_player' ) || ! isset( $_GET['post_id'] ) ) {
-				$message = array(
-					'type'    => 'error',
-					'message' => 'You cannot generate the GIF player for security reasons.',
-				);
-
-				set_transient( 'wp_gp_pp_admin_notice', $message );
-
-				wp_safe_redirect( wp_get_referer() );
-				exit;
+				$this->redirect_to_referer( 'bad_nonce' );
 			}
 
-			$this->pre_create_thumbnail_from_gif( $_GET['post_id'] );
+			$attachment_id = (int) sanitize_key( $_GET['post_id'] );
 
-			$message = array(
-				'type'    => 'success',
-				'message' => 'The GIF player assets for the selected GIF was successfully created.',
-			);
+			if ( ! is_numeric( $attachment_id ) || 0 === $attachment_id ) {
+				$this->redirect_to_referer( 'invalid_post_id' );
+			}
 
-			set_transient( 'wp_gp_pp_admin_notice', $message );
+			$attachment = get_post( $attachment_id );
 
-			wp_safe_redirect( wp_get_referer() );
-			exit;
+			if ( ! $attachment ) {
+				$this->redirect_to_referer( 'invalid_post' );
+			}
+
+			$this->pre_create_thumbnail_from_gif( $attachment_id );
+			$this->redirect_to_referer( 'gif_generated', 'success' );
 		}
 
 		/**
@@ -203,6 +198,42 @@ if ( ! class_exists( 'WP_GP_PP_Media' ) ) {
 				WP_GP_PP_VERSION,
 				$in_footer
 			);
+		}
+
+		/**
+		 * Set the admin notice type and message and redirect to
+		 * the page that executed the action.
+		 *
+		 * In this case the redirection has to redirect to "upload.php"
+		 * but if the referer doesn't exists we return to "upload.php" by default.
+		 *
+		 * @since  0.1.0
+		 * @access private
+		 *
+		 * @param  string   $message   The message key to print the admin notice.
+		 * @param  string   $type      The current admin notice type (error or success).
+		 *
+		 * @SuppressWarnings(PHPMD.ExitExpression)
+		 */
+		private function redirect_to_referer( $message, $type = 'error' ) {
+			$messages = array(
+				'bad_nonce'       => 'You cannot generate the GIF player for security reasons.',
+				'invalid_post_id' => 'The current post ID is not a valid WordPress post ID.',
+				'invalid_post'    => 'The current post ID does not belong to a valid WordPress attachment.',
+				'gif_generated'   => 'The GIF player assets for the selected GIF was successfully created.',
+			);
+
+			$response = array(
+				'type'    => $type,
+				'message' => $messages[ $message ] ?? 'Something went wrong when trying to generate the GIF player.',
+			);
+
+			set_transient( 'wp_gp_pp_admin_notice', $response );
+
+			$referer = wp_get_referer() ?: admin_url( 'upload.php' );
+			wp_safe_redirect( $referer );
+
+			exit;
 		}
 	}
 }
