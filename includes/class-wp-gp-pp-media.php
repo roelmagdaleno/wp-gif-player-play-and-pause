@@ -108,7 +108,7 @@ if ( ! class_exists( 'WP_GP_PP_Media' ) ) {
 				$this->redirect_to_referer( 'bad_nonce' );
 			}
 
-			$attachment_id = (int) sanitize_key( $_GET['post_id'] );
+			$attachment_id = (int) $_GET['post_id'];
 
 			if ( ! is_numeric( $attachment_id ) || 0 === $attachment_id ) {
 				$this->redirect_to_referer( 'invalid_post_id' );
