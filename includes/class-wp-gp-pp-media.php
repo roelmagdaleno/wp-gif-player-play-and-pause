@@ -151,9 +151,9 @@ if ( ! class_exists( 'WP_GP_PP_Media' ) ) {
 				array_merge( $mime_types, wp_gp_pp_get_video_mime_types() );
 			}
 
-			$gif_children_mime_types = wp_list_pluck( get_children( $post->ID ), 'post_mime_type' );
+			$saved_mime_types = wp_list_pluck( get_children( $post->ID ), 'post_mime_type' );
 
-			if ( empty( array_diff( $mime_types, $gif_children_mime_types ) ) ) {
+			if ( empty( array_diff( $mime_types, $saved_mime_types ) ) ) {
 				return $actions;
 			}
 
