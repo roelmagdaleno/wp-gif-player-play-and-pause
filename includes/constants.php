@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 0.1.0
  */
-define( 'WP_GP_PP_VERSION', '0.1.0' );
+define( 'WP_GP_PP_VERSION', '0.1.1' );
 
 /**
  * The plugin main file.
