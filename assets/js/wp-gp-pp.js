@@ -3,6 +3,8 @@ const pauseObserver = new IntersectionObserver( WP_GP_PP_maybePauseGIF, {
     threshold: 0.7
 } );
 
+const WP_GP_PP_OVERLAY_SELECTOR = '.wp-gp-pp-overlay';
+
 /**
  * Pause the GIF when the player is out of the container view.
  * We're using the IntersectionObserver API to achieve that.
@@ -26,7 +28,7 @@ function WP_GP_PP_maybePauseGIF( entries, observer ) {
             continue;
         }
 
-        const overlay = gifEl.querySelector( '.wp-gp-pp-overlay' );
+        const overlay = gifEl.querySelector( WP_GP_PP_OVERLAY_SELECTOR );
 
         if ( ! overlay ) {
             continue;
@@ -51,7 +53,7 @@ function WP_GP_PP_initGIFCanvas() {
 
     for ( let i = 0; i < gifs.length; i++ ) {
         const gif      = gifs[i];
-        const overlay  = gif.nextElementSibling;
+        const overlay  = gif.parentElement.querySelector( WP_GP_PP_OVERLAY_SELECTOR );
         const superGif = new SuperGif( { gif: gif } );
 
         superGif.load( () => WP_GP_PP_toggleCanvasGIF( overlay, superGif ) );
@@ -109,7 +111,7 @@ function WP_GP_PP_toggleVideosGIF() {
 
     for ( let i = 0; i < videos.length; i++ ) {
         const video     = videos[ i ];
-        const overlay   = video.nextElementSibling;
+        const overlay   = video.parentElement.querySelector( WP_GP_PP_OVERLAY_SELECTOR );
         const container = video.parentElement;
 
         overlay.onclick = () => {
@@ -142,9 +144,9 @@ function WP_GP_PP_toggleGIF() {
 
     for ( let i = 0; i < thumbnails.length; i++ ) {
         const thumbnail = thumbnails[ i ];
-        const realGifEl = thumbnail.nextElementSibling;
         const container = thumbnail.parentElement;
-        const overlay   = realGifEl.nextElementSibling;
+        const realGifEl = container.querySelector( '.wp-gp-pp-gif' );
+        const overlay   = container.querySelector( WP_GP_PP_OVERLAY_SELECTOR );
 
         pauseObserver.observe( container );
 
@@ -155,10 +157,10 @@ function WP_GP_PP_toggleGIF() {
 
             isPlaying ? classList.remove( 'is-playing' ) : classList.add( 'is-playing' );
 
-            if ( '' === realGifEl.getAttribute( 'src' ) ) {
-                let thumbnailImage = thumbnail.getAttribute( 'src' );
-                let gifImage       = thumbnailImage.replace( '_gif_thumbnail.jpeg', '.gif' );
+            let thumbnailImage = thumbnail.getAttribute( 'src' );
+            let gifImage       = thumbnailImage.replace( '_gif_thumbnail.jpeg', '.gif' );
 
+            if ( ! WP_GP_PP_realGIFhasSource( realGifEl, gifImage ) ) {
                 realGifEl.setAttribute( 'src', gifImage );
             }
 
@@ -166,6 +168,38 @@ function WP_GP_PP_toggleGIF() {
             isPlaying ? container.classList.remove( 'is-playing' ) : container.classList.add( 'is-playing' );
         };
     }
+}
+
+/**
+ * Check if the real GIF has the GIF source in its attribute.
+ *
+ * Some lazy load plugin might add a base64 pixel so we have to
+ * read that and decide to show the real GIF or not.
+ *
+ * @since  0.1.1
+ *
+ * @param  {Element}   realGifEl   The original GIF element.
+ * @param  {string}    gifImage    This is the thumbnail image source with replaced string.
+ * @return {boolean}               Whether the original GIF has its source or not.
+ */
+function WP_GP_PP_realGIFhasSource( realGifEl, gifImage ) {
+    const gifSrc = realGifEl.getAttribute( 'src' );
+
+    if ( gifImage === gifSrc ) {
+        return true;
+    }
+
+    if ( '' === gifSrc ) {
+        return false;
+    }
+
+    const gifDataset = realGifEl.dataset;
+
+    if ( gifDataset.hasOwnProperty( 'src' ) && '' === gifDataset.src ) {
+        return false;
+    }
+
+    return ! ( gifSrc.includes( 'data' ) || gifSrc.includes( 'base64' ) || gifSrc.includes( 'lazy' ) );
 }
 
 /**
