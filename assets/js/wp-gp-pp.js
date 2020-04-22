@@ -157,10 +157,10 @@ function WP_GP_PP_toggleGIF() {
 
             isPlaying ? classList.remove( 'is-playing' ) : classList.add( 'is-playing' );
 
-            if ( '' === realGifEl.getAttribute( 'src' ) ) {
-                let thumbnailImage = thumbnail.getAttribute( 'src' );
-                let gifImage       = thumbnailImage.replace( '_gif_thumbnail.jpeg', '.gif' );
+            let thumbnailImage = thumbnail.getAttribute( 'src' );
+            let gifImage       = thumbnailImage.replace( '_gif_thumbnail.jpeg', '.gif' );
 
+            if ( ! WP_GP_PP_realGIFhasSource( realGifEl, gifImage ) ) {
                 realGifEl.setAttribute( 'src', gifImage );
             }
 
@@ -168,6 +168,38 @@ function WP_GP_PP_toggleGIF() {
             isPlaying ? container.classList.remove( 'is-playing' ) : container.classList.add( 'is-playing' );
         };
     }
+}
+
+/**
+ * Check if the real GIF has the GIF source in its attribute.
+ *
+ * Some lazy load plugin might add a base64 pixel so we have to
+ * read that and decide to show the real GIF or not.
+ *
+ * @since  0.1.1
+ *
+ * @param  {Element}   realGifEl   The original GIF element.
+ * @param  {string}    gifImage    This is the thumbnail image source with replaced string.
+ * @return {boolean}               Whether the original GIF has its source or not.
+ */
+function WP_GP_PP_realGIFhasSource( realGifEl, gifImage ) {
+    const gifSrc = realGifEl.getAttribute( 'src' );
+
+    if ( gifImage === gifSrc ) {
+        return true;
+    }
+
+    if ( '' === gifSrc ) {
+        return false;
+    }
+
+    const gifDataset = realGifEl.dataset;
+
+    if ( gifDataset.hasOwnProperty( 'src' ) && '' === gifDataset.src ) {
+        return false;
+    }
+
+    return ! ( gifSrc.includes( 'data' ) || gifSrc.includes( 'base64' ) || gifSrc.includes( 'lazy' ) );
 }
 
 /**
