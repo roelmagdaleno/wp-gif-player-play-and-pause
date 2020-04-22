@@ -82,3 +82,17 @@ To use the GIF Player as video you need two things:
 ### What video formats does the GIF convert to?
 
 By default the plugin **converts the GIF to WebM and MP4** but you can add more [using the custom filters](https://github.com/roelmagdaleno/wp-gif-player-play-and-pause/wiki/Hooks).
+
+### Is compatible with Lazy Load?
+
+Some Lazy Load plugins are compatible with the three GIF player methods in the plugin but there are other plugins that won't allow you to reproduce the GIF player.
+
+In case the GIF player cannot reproduce you can use your Lazy Load plugin filters to skip Lazy Load by using the GIF CSS classes.
+
+The CSS classes for every GIF player are:
+
+* GIF: `wp-gp-pp-gif`
+* Canvas: `wp-gp-pp-gif-canvas-player`
+* Video: `wp-gp-pp-video-player`
+
+If your Lazy Load plugin ask you to add a custom CSS class into the GIF asset to avoid Lazy Load you will have to use the GIF player custom filters in your `functions.php` file. [Check the custom filters to avoid Lazy Load for the GIF players](https://github.com/roelmagdaleno/wp-gif-player-play-and-pause/wiki/Hooks).

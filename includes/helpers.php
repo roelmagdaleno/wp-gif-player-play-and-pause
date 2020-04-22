@@ -226,7 +226,7 @@ function wp_gp_pp_get_thumbnail( $gif_link ) {
  * load the GIF(s).
  *
  * @since  0.1.0
- * @access private
+ * @since  0.1.1    Add filter to update the default CSS classes for the GIF asset.
  *
  * @param  array    $attachment   The GIF attachment data.
  * @return string                 The GIF player wrapper for canvas method.
@@ -237,13 +237,17 @@ function wp_gp_pp_render_wrapper_for_gif( $attachment ) {
 	$height    = $attachment['height'];
 	$image_id  = $attachment['image_id'];
 
+	$default     = array( 'wp-gp-pp-gif' );
+	$css_classes = apply_filters( 'wp_gp_pp_gif_css_classes', $default );
+	$css_classes = wp_gp_pp_validate_css_filter( $css_classes, $default );
+
 	$image  = '<div class="wp-gp-pp-container" style="width: ' . $width . 'px; height: ' . $height . 'px" ';
 	$image .= 'data-width="' . $width . '" data-height="' . $height . '" data-media-id="' . $attachment['attachment_id'] . '">';
 	$image .= '<img src="' . esc_attr( $thumbnail ) . '" id="' . esc_attr( $image_id ) . '--thumbnail" ';
 	$image .= 'class="wp-gp-pp-gif-thumbnail" width="' . $width . '" height="' . $height . '" alt="">';
 
 	$image .= '<img src="" id="' . esc_attr( $image_id . wp_rand() ) . '" ';
-	$image .= 'class="wp-gp-pp-gif" width="' . $width . '" height="' . $height . '" alt="">';
+	$image .= 'class="' . implode( ' ', $css_classes ) . '" width="' . $width . '" height="' . $height . '" alt="">';
 
 	return $image;
 }
@@ -255,7 +259,7 @@ function wp_gp_pp_render_wrapper_for_gif( $attachment ) {
  * the GIF play and pause actions.
  *
  * @since  0.1.0
- * @access private
+ * @since  0.1.1    Add filter to update the default CSS classes for the GIF asset.
  *
  * @param  array    $attachment   The GIF attachment data.
  * @return string                 The GIF player wrapper for canvas method.
@@ -266,10 +270,14 @@ function wp_gp_pp_render_wrapper_for_canvas( $attachment ) {
 	$height    = $attachment['height'];
 	$source    = str_replace( '_gif_thumbnail.jpeg', '.gif', $thumbnail );
 
+	$default     = array( 'wp-gp-pp-gif-canvas-player' );
+	$css_classes = apply_filters( 'wp_gp_pp_canvas_css_classes', $default );
+	$css_classes = wp_gp_pp_validate_css_filter( $css_classes, $default );
+
 	$image  = '<div class="wp-gp-pp-container" style="width: ' . $width . 'px; height: ' . $height . 'px" ';
 	$image .= 'data-width="' . $width . '" data-height="' . $height . '" data-media-id="' . $attachment['attachment_id'] . '">';
 	$image .= '<img src="' . esc_attr( $thumbnail ) . '" id="' . esc_attr( $attachment['image_id'] . wp_rand() ) . '" ';
-	$image .= 'rel:animated_src="' . esc_attr( $source ) . '" rel:auto_play="0" class="wp-gp-pp-gif-canvas-player" ';
+	$image .= 'rel:animated_src="' . esc_attr( $source ) . '" rel:auto_play="0" class="' . implode( ' ', $css_classes ) . '" ';
 	$image .= 'width="' . $width . '" height="' . $height . '" alt="">';
 
 	return $image;
@@ -286,7 +294,7 @@ function wp_gp_pp_render_wrapper_for_canvas( $attachment ) {
  * Also, the thumbnail will be used as the video poster.
  *
  * @since  0.1.0
- * @access private
+ * @since  0.1.1    Add filter to update the default CSS classes for the GIF asset.
  *
  * @param  array    $attachment   The GIF attachment data.
  * @return string                 The GIF player wrapper for canvas method.
@@ -308,9 +316,13 @@ function wp_gp_pp_render_wrapper_for_video( $attachment ) {
 		return '<p>For some reason the selected GIF was not converted to video format. Please, use the REPLACE option to select a new GIF.</p>';
 	}
 
+	$default     = array( 'wp-gp-pp-video-player' );
+	$css_classes = apply_filters( 'wp_gp_pp_video_css_classes', $default );
+	$css_classes = wp_gp_pp_validate_css_filter( $css_classes, $default );
+
 	$video  = '<div class="wp-gp-pp-container" style="width: ' . $width . 'px; height: ' . $height . 'px" ';
 	$video .= 'data-width="' . $width . '" data-height="' . $height . '" data-media-id="' . $attachment['attachment_id'] . '">';
-	$video .= '<video loop muted playsinline class="wp-gp-pp-video-player" ';
+	$video .= '<video loop muted playsinline class="' . implode( ' ', $css_classes ) . '" ';
 	$video .= 'poster="' . esc_attr( $thumbnail ) . '" id="' . esc_attr( $attachment['image_id'] . wp_rand() ) . '" ';
 	$video .= 'width="' . $width . '" height="' . $height . '">';
 
@@ -324,6 +336,22 @@ function wp_gp_pp_render_wrapper_for_video( $attachment ) {
 	$video .= '</video>';
 
 	return $video;
+}
+
+/**
+ * Validate if the CSS filter for the GIF render methods are valid.
+ *
+ * If the user filtered value is not array or is an empty value
+ * it will return the plugin default value.
+ *
+ * @since  0.1.1
+ *
+ * @param  array   $filter_value   The user filtered value.
+ * @param  array   $default        The plugin default value.
+ * @return array                   The user filtered value if validation passes or default it fails.
+ */
+function wp_gp_pp_validate_css_filter( $filter_value, $default ) {
+	return ( ! is_array( $filter_value ) || empty( $filter_value ) ) ? $default : $filter_value;
 }
 
 /**

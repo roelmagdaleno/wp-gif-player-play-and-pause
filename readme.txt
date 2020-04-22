@@ -4,7 +4,7 @@ Donate link: https://paypal.me/roelmagdaleno
 Tags: gif, player
 Requires at least: 5.0
 Tested up to: 5.4
-Stable tag: 0.1.0
+Stable tag: 0.1.1
 Requires PHP: 7.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -62,6 +62,20 @@ When you save and view the post, the plugin will render the GIF Player according
 
 You can use the GIF Player as a Gutenberg block. [Check the wiki for more details](https://github.com/roelmagdaleno/wp-gif-player-play-and-pause/wiki/Gutenberg-Block).
 
+== Is compatible with Lazy Load? ==
+
+Some Lazy Load plugins are compatible with the three GIF player methods in the plugin but there are other plugins that won't allow you to reproduce the GIF player.
+
+In case the GIF player cannot reproduce you can use your Lazy Load plugin filters to skip Lazy Load by using the GIF CSS classes.
+
+The CSS classes for every GIF player are:
+
+* GIF: `wp-gp-pp-gif`
+* Canvas: `wp-gp-pp-gif-canvas-player`
+* Video: `wp-gp-pp-video-player`
+
+If your Lazy Load plugin ask you to add a custom CSS class into the GIF asset to avoid Lazy Load you will have to use the GIF player custom filters in your `functions.php` file. [Check the custom filters to avoid Lazy Load for the GIF players](https://github.com/roelmagdaleno/wp-gif-player-play-and-pause/wiki/Hooks).
+
 == Installation ==
 
 1. Upload the plugin files to the `/wp-content/plugins/wp-gif-player-play-and-pause` directory, or install the plugin through the WordPress plugins screen directly.
@@ -92,6 +106,20 @@ To use the GIF Player as video you need two things:
 
 By default the plugin **converts the GIF to WebM and MP4** but you can add more [using the custom filters](https://github.com/roelmagdaleno/wp-gif-player-play-and-pause/wiki/Hooks).
 
+= Is compatible with Lazy Load? =
+
+Some Lazy Load plugins are compatible with the three GIF player methods in the plugin but there are other plugins that won't allow you to reproduce the GIF player.
+
+In case the GIF player cannot reproduce you can use your Lazy Load plugin filters to skip Lazy Load by using the GIF CSS classes.
+
+The CSS classes for every GIF player are:
+
+* GIF: `wp-gp-pp-gif`
+* Canvas: `wp-gp-pp-gif-canvas-player`
+* Video: `wp-gp-pp-video-player`
+
+If your Lazy Load plugin ask you to add a custom CSS class into the GIF asset to avoid Lazy Load you will have to use the GIF player custom filters in your `functions.php` file. [Check the custom filters to avoid Lazy Load for the GIF players](https://github.com/roelmagdaleno/wp-gif-player-play-and-pause/wiki/Hooks).
+
 == Screenshots ==
 
 1. screenshot-1: Plugin Options.
@@ -103,10 +131,20 @@ By default the plugin **converts the GIF to WebM and MP4** but you can add more 
 
 == Upgrade Notice ==
 
+= 0.1.1 =
+* FEATURE: Add filter to update the default CSS classes for the GIF asset.
+* IMPROVE: Check if the real GIF has any source in its attribute.
+* FIX: It was finding the selector using nextChild instead of parentElement.
+
 = 0.1.0 =
 * Initial plugin functionality. Check the [GitHub Repository](https://github.com/roelmagdaleno/wp-gif-player-play-and-pause) to check the commits.
 
 == Changelog ==
+
+= 0.1.1 =
+* FEATURE: Add filter to update the default CSS classes for the GIF asset.
+* IMPROVE: Check if the real GIF has any source in its attribute.
+* FIX: It was finding the selector using nextChild instead of parentElement.
 
 = 0.1.0 =
 * Initial plugin functionality. Check the [GitHub Repository](https://github.com/roelmagdaleno/wp-gif-player-play-and-pause) to check the commits.
