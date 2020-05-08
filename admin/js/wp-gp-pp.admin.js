@@ -23,6 +23,11 @@ function WP_GP_PP_testFFmpeg( buttonEl ) {
             const titleEl       = document.querySelector( '.wp-gp-pp-title' );
             const descriptionEl = document.querySelector( '.wp-gp-pp-description' );
 
+            if ( ! response.data ) {
+                WP_GP_PP_enableTestButton( buttonEl );
+                return;
+            }
+
             titleEl.innerHTML       = `<strong>${ response.data.title }</strong>`;
             descriptionEl.innerHTML = response.data.description;
 
@@ -36,10 +41,21 @@ function WP_GP_PP_testFFmpeg( buttonEl ) {
                 return;
             }
 
-            buttonEl.disabled  = false;
-            buttonEl.innerHTML = 'Test FFmpeg';
+            WP_GP_PP_enableTestButton( buttonEl );
         }
     };
 
     xhr.send( `action=wp_gp_pp_test_ffmpeg&_wpnonce=${WP_GP_PP_ADMIN.ajax_nonce}` );
+}
+
+/**
+ * Enable the "Test FFmpeg" and set the original string back.
+ *
+ * @since 0.1.2
+ *
+ * @param {Element}   buttonEl   The "Test FFmpeg" button.
+ */
+function WP_GP_PP_enableTestButton( buttonEl ) {
+    buttonEl.disabled  = false;
+    buttonEl.innerHTML = 'Test FFmpeg';
 }

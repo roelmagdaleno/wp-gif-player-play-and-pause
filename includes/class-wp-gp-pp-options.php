@@ -73,15 +73,16 @@ if ( ! class_exists( 'WP_GP_PP_Options' ) ) {
 		public function test_ffmpeg() {
 			check_admin_referer( 'wp-gp-pp-gif-player' );
 
-			if ( (bool) $this->settings['ffmpeg_installed'] ) {
-				return;
-			}
-
-			$is_installed    = wp_gp_pp_is_ffmpeg_installed();
 			$success_message = array(
 				'title'       => 'Library "FFmpeg" is installed in your server.',
 				'description' => 'You can now convert GIF to Videos and use it in your posts and pages.',
 			);
+
+			if ( (bool) $this->settings['ffmpeg_installed'] ) {
+				wp_send_json_success( $success_message );
+			}
+
+			$is_installed = wp_gp_pp_is_ffmpeg_installed();
 
 			is_wp_error( $is_installed )
 				? wp_send_json_error( $is_installed->get_error_data() )
