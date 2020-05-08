@@ -52,9 +52,16 @@ function WP_GP_PP_initGIFCanvas() {
     const gifs = document.querySelectorAll( '.wp-gp-pp-gif-canvas-player' );
 
     for ( let i = 0; i < gifs.length; i++ ) {
-        const gif      = gifs[i];
-        const overlay  = gif.parentElement.querySelector( WP_GP_PP_OVERLAY_SELECTOR );
-        const superGif = new SuperGif( { gif: gif } );
+        const gif       = gifs[i];
+        const container = gif.parentElement;
+        const overlay   = container.querySelector( WP_GP_PP_OVERLAY_SELECTOR );
+        const dataset   = container.dataset;
+        const superGif  = new SuperGif( {
+            gif: gif,
+            c_w: dataset.width,
+            c_h: dataset.height,
+            max_width: dataset.width
+        } );
 
         superGif.load( () => WP_GP_PP_toggleCanvasGIF( overlay, superGif ) );
     }
