@@ -32,10 +32,6 @@ function wp_gp_pp_is_ffmpeg_installed() {
 			'title'       => 'The "shell_exec" function is not enabled in your server.',
 			'description' => 'To use the "<strong>ffmpeg</strong>" command to <strong>convert GIF to Video</strong> you need to enable the "<strong>shell_exec</strong>" command in your PHP configuration.',
 		),
-		'no_command'    => array(
-			'title'       => 'The executed command does not belong to FFmpeg.',
-			'description' => 'The tested command does not belong to FFmpeg. Verify this plugin has not being edited and download it from the original source from <a href="https://github.com/roelmagdaleno/wp-gif-player-play-and-pause" target="_blank">GitHub</a> or WordPress.org.',
-		),
 		'not_installed' => array(
 			'title'       => 'Library "FFmpeg" not installed.',
 			'description' => 'To use the <strong>video</strong> method for the GIF player you need to install the "FFmpeg" library in your server.',
@@ -61,7 +57,7 @@ function wp_gp_pp_is_ffmpeg_installed() {
 	$version_number = (int) str_replace( '.', '', $ffmpeg_strings[2] );
 
 	if ( 'ffmpeg' !== $command ) {
-		return new WP_Error( 'no_command', $errors['no_command']['title'], $errors['no_command'] );
+		return new WP_Error( 'not_installed', $errors['not_installed']['title'], $errors['not_installed'] );
 	}
 
 	if ( 'version' !== $version_string || ! is_numeric( $version_number ) ) {
