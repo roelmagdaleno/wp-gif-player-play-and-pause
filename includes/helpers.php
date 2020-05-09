@@ -33,8 +33,8 @@ function wp_gp_pp_is_ffmpeg_installed() {
 			'description' => 'To use the "<strong>ffmpeg</strong>" command to <strong>convert GIF to Video</strong> you need to enable the "<strong>shell_exec</strong>" command in your PHP configuration.',
 		),
 		'not_installed' => array(
-			'title'       => 'Library "FFmpeg" not installed.',
-			'description' => 'To use the <strong>video</strong> method for the GIF player you need to install the "FFmpeg" library in your server.',
+			'title'       => 'Library "FFmpeg" and "VP9" codec not installed.',
+			'description' => 'To use the <strong>video</strong> method for the GIF player you need to install the "FFmpeg" library with "VP9" codec in your server.',
 		),
 		'no_example'    => array(
 			'title'       => 'The example.gif file to test the FFmpeg video conversion does not exists.',
@@ -291,6 +291,7 @@ function wp_gp_pp_render_wrapper_for_canvas( $attachment ) {
  *
  * @since  0.1.0
  * @since  0.1.1    Add filter to update the default CSS classes for the GIF asset.
+ * @since  0.1.2    Render original GIF as fallback when no video sources found.
  *
  * @param  array    $attachment   The GIF attachment data.
  * @return string                 The GIF player wrapper for canvas method.
@@ -312,6 +313,25 @@ function wp_gp_pp_render_wrapper_for_video( $attachment ) {
 		return '<p>For some reason the selected GIF was not converted to video format. Please, use the REPLACE option to select a new GIF.</p>';
 	}
 
+	$sources = '';
+
+	foreach ( $children as $video_source ) {
+		$video_path = wp_gp_pp_url_to_path( $video_source['guid'] );
+
+		if ( ! file_exists( $video_path ) ) {
+			continue;
+		}
+
+		$guid = esc_attr( $video_source['guid'] );
+		$type = esc_attr( $video_source['post_mime_type'] );
+
+		$sources .= '<source src="' . $guid . '" type="' . $type . '">';
+	}
+
+	if ( empty( $sources ) ) {
+		return wp_gp_pp_render_wrapper_for_gif( $attachment );
+	}
+
 	$default     = array( 'wp-gp-pp-video-player' );
 	$css_classes = apply_filters( 'wp_gp_pp_video_css_classes', $default );
 	$css_classes = wp_gp_pp_validate_css_filter( $css_classes, $default );
@@ -321,17 +341,52 @@ function wp_gp_pp_render_wrapper_for_video( $attachment ) {
 	$video .= '<video loop muted playsinline class="' . implode( ' ', $css_classes ) . '" ';
 	$video .= 'poster="' . esc_attr( $thumbnail ) . '" id="' . esc_attr( $attachment['image_id'] . wp_rand() ) . '" ';
 	$video .= 'width="' . $width . '" height="' . $height . '">';
-
-	foreach ( $children as $video_source ) {
-		$guid = esc_attr( $video_source['guid'] );
-		$type = esc_attr( $video_source['post_mime_type'] );
-
-		$video .= '<source src="' . $guid . '" type="' . $type . '">';
-	}
-
+	$video .= $sources;
 	$video .= '</video>';
 
 	return $video;
+}
+
+/**
+ * Check if the current GIF needs a fallback render method.
+ * This function applies only for videos.
+ *
+ * @since  0.1.2
+ *
+ * @param  WP_Post   $attachment   The current attachment ID.
+ * @return bool                    Whether the GIF video needs render fallback.
+ */
+function wp_gp_pp_video_needs_fallback( $attachment ) {
+	if ( 'image/gif' !== $attachment->post_mime_type ) {
+		return false;
+	}
+
+	$args = array(
+		'post_parent'    => $attachment->ID,
+		'orderby'        => 'ID',
+		'order'          => 'ASC',
+		'post_mime_type' => wp_gp_pp_get_video_mime_types(),
+	);
+
+	$children = get_children( $args, ARRAY_A );
+
+	if ( empty( $children ) ) {
+		return true;
+	}
+
+	$sources = array();
+
+	foreach ( $children as $video_source ) {
+		$video_path = wp_gp_pp_url_to_path( $video_source['guid'] );
+
+		if ( ! file_exists( $video_path ) ) {
+			continue;
+		}
+
+		$sources[] = $video_path;
+	}
+
+	return empty( $sources );
 }
 
 /**
@@ -390,6 +445,18 @@ function wp_gp_pp_is_gif( $attachment_id ) {
  */
 function wp_gp_pp_path_to_url( $path ) {
 	return str_replace( ABSPATH, home_url( '/' ), $path );
+}
+
+/**
+ * Convert the media element to a valid file path.
+ *
+ * @since  0.1.2
+ *
+ * @param  string   $url   The current GIF/Image/Video URL.
+ * @return string          The converted GIF/Image/Video path.
+ */
+function wp_gp_pp_url_to_path( $url ) {
+	return str_replace( home_url( '/' ), ABSPATH, $url );
 }
 
 /**
