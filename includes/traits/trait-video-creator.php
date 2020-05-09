@@ -38,6 +38,10 @@ trait WP_GP_PP_Video_Creator {
 
 			shell_exec( 'ffmpeg -i ' . $gif_path . ' ' . $video_command . ' ' . $video_path ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions
 
+			if ( ! file_exists( $video_path ) ) {
+				continue;
+			}
+
 			if ( 0 === filesize( $video_path ) ) {
 				wp_delete_file( $video_path );
 				continue;
@@ -70,10 +74,18 @@ trait WP_GP_PP_Video_Creator {
 	 *
 	 * If you add a new command be sure is a valid one otherwise the videos won't generate.
 	 *
+	 * Since v0.1.2 we're using a new MP4 command to convert the GIF.
+	 * The command from Google was creating the files with empty size.
+	 *
+	 * We added a new filter to avoid scalation issues:
+	 * https://stackoverflow.com/a/20848224/2644250
+	 *
 	 * WARNING:
 	 * You need "ffmpeg" library in your server so the the <video> can work.
 	 *
 	 * @since  0.1.0
+	 * @since  0.1.2   MP4 command was changed because old command didn't convert some GIF files.
+	 *
 	 * @access private
 	 *
 	 * @return array   The video file extensions and its commands to use with ffmpeg.
@@ -81,7 +93,7 @@ trait WP_GP_PP_Video_Creator {
 	private function get_video_extensions_and_commands() {
 		$video_types = array(
 			'.webm' => '-c vp9 -b:v 0 -crf 41',
-			'.mp4'  => '-b:v 0 -crf 25 -f mp4 -vcodec libx264 -pix_fmt yuv420p',
+			'.mp4'  => '-b:v 0 -crf 25 -f mp4 -vcodec libx264 -pix_fmt yuv420p -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2"',
 		);
 
 		return apply_filters( 'wp_gp_pp_video_types_and_commands', $video_types );

@@ -1,7 +1,7 @@
 {
   "name": "wp-gif-player-play-and-pause",
-  "version": "0.1.0",
-  "description": "Attach GIF players into your posts and pages.",
+  "version": "0.1.2",
+  "description": "Insert GIFs that can be played and paused into your WordPress posts and pages using shortcodes and Gutenberg blocks.",
   "main": "index.js",
   "scripts": {
     "minify": "terser assets/js/wp-gp-pp.js --compress --mangle --output assets/js/wp-gp-pp.min.js",

@@ -34,6 +34,10 @@ registerBlockType( 'roelmagdaleno/gif-player', {
         align: {
             type: 'string',
             default: 'center'
+        },
+        useFallback: {
+            type: 'boolean',
+            default: false
         }
     },
     transforms: {

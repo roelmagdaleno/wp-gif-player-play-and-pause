@@ -2,7 +2,8 @@ import {
     PanelBody,
     PanelRow,
     SelectControl,
-    withNotices
+    withNotices,
+    Notice
 } from '@wordpress/components';
 
 import {
@@ -20,7 +21,7 @@ import {
 
 import ServerSideRender from '@wordpress/server-side-render';
 
-const edit = ( { attributes, setAttributes, noticeOperations, noticeUI } ) => {
+const edit = ( { attributes, setAttributes, noticeOperations, noticeUI, clientId, isSelected } ) => {
     const {
         mediaID,
         mediaURL,
@@ -29,19 +30,59 @@ const edit = ( { attributes, setAttributes, noticeOperations, noticeUI } ) => {
         height,
         imageWidth,
         imageHeight,
-        align
+        align,
+        useFallback
     } = attributes;
 
+    function usingFallback() {
+        if ( useFallback ) {
+            return true;
+        }
+
+        const container = document.getElementById( `block-${ clientId }` );
+
+        if ( ! container ) {
+            return false;
+        }
+
+        const originalGif = container.querySelector( '.wp-gp-pp-gif' );
+
+        if ( ! originalGif ) {
+            return false;
+        }
+
+        return 'video' === gifMethod;
+    }
+
     const onSelectImage = ( media ) => {
-        setAttributes( {
+        let gifImage = {
             mediaID: media.id,
             mediaURL: media.url,
             width: media.width,
             height: media.height,
             imageWidth: media.width,
             imageHeight: media.height,
-            gifMethod: gifMethod
-        } );
+            gifMethod: gifMethod,
+            useFallback: false
+        };
+
+        if ( media.wp_gp_pp_video_needs_fallback ) {
+            gifImage.useFallback = media.wp_gp_pp_video_needs_fallback;
+        }
+
+        setAttributes( gifImage );
+    };
+
+    const onChangeGifMethod = ( gifMethod ) => {
+        let attributes = {
+            gifMethod
+        };
+
+        if ( useFallback && 'video' !== gifMethod ) {
+            attributes.useFallback = false;
+        }
+
+        setAttributes( attributes )
     };
 
     const onImageError = ( message ) => {
@@ -52,11 +93,27 @@ const edit = ( { attributes, setAttributes, noticeOperations, noticeUI } ) => {
     const accept       = 'image/gif';
     const allowedTypes = ['image/gif'];
 
+    if ( isSelected && ! useFallback ) {
+        setAttributes( { useFallback: usingFallback() } );
+    }
+
     return (
         <>
             <Fragment>
                 <InspectorControls>
                     <PanelBody>
+                        { useFallback && (
+                            <PanelRow>
+                                <Notice
+                                    status = 'warning'
+                                    isDismissible = { false }
+                                    className = { 'wp-gp-pp__fallback-notice' }
+                                >
+                                    <p>This GIF Player was rendered as default GIF Player (GIF) because <strong>there are no valid video sources found</strong>.</p>
+                                </Notice>
+                            </PanelRow>
+                        ) }
+
                         <PanelRow>
                             <SelectControl
                                 label = { 'GIF Method' }
@@ -66,7 +123,7 @@ const edit = ( { attributes, setAttributes, noticeOperations, noticeUI } ) => {
                                     { label: 'Canvas', value: 'canvas' },
                                     { label: 'Video', value: 'video', disabled: ! ( !! WP_GIF_PLAYER.ffmpegInstalled ) }
                                 ] }
-                                onChange = { ( gifMethod ) => setAttributes( { gifMethod } ) }
+                                onChange = { onChangeGifMethod }
                             />
                         </PanelRow>
 
@@ -103,7 +160,16 @@ const edit = ( { attributes, setAttributes, noticeOperations, noticeUI } ) => {
                     mediaID ?
                         <ServerSideRender
                             block = 'roelmagdaleno/gif-player'
-                            attributes = { attributes }
+                            attributes = { {
+                                mediaID,
+                                mediaURL,
+                                gifMethod,
+                                width,
+                                height,
+                                imageWidth,
+                                imageHeight,
+                                align
+                            } }
                             className = { `align${align}` }
                         /> :
                         <MediaPlaceholder

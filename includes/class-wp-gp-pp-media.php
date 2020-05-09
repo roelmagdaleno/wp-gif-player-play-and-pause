@@ -46,6 +46,27 @@ if ( ! class_exists( 'WP_GP_PP_Media' ) ) {
 			add_action( 'wp_enqueue_media', array( $this, 'add_gif_button_scripts' ) );
 			add_action( 'admin_post_wp_gp_pp_generate_gif_player', array( $this, 'create_gif_from_media_row' ) );
 			add_filter( 'media_row_actions', array( $this, 'add_row_actions' ), 10, 2 );
+			add_filter( 'wp_prepare_attachment_for_js', array( $this, 'add_fallback_property' ), 10, 2 );
+		}
+
+		/**
+		 * Add the "wp_gp_pp_video_needs_fallback" property into the
+		 * response object to the attachment ID that couldn't generate
+		 * the video sources.
+		 *
+		 * @since  0.1.2
+		 *
+		 * @param  array     $response     The response object to send to frontend using AJAX.
+		 * @param  WP_Post   $attachment   The current attachment ID.
+		 * @return array                   The response object with our fallback property.
+		 */
+		public function add_fallback_property( $response, $attachment ) {
+			if ( ! wp_gp_pp_video_needs_fallback( $attachment ) ) {
+				return $response;
+			}
+
+			$response['wp_gp_pp_video_needs_fallback'] = true;
+			return $response;
 		}
 
 		/**
