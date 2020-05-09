@@ -106,7 +106,7 @@ function wp_gp_pp_test_example_video() {
 	$video_paths = array();
 	$video_types = array(
 		'.webm' => '-c vp9 -b:v 0 -crf 41',
-		'.mp4'  => '-b:v 0 -crf 25 -f mp4 -vcodec libx264 -pix_fmt yuv420p',
+		'.mp4'  => '-b:v 0 -crf 25 -f mp4 -vcodec libx264 -pix_fmt yuv420p -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2"',
 	);
 
 	foreach ( $video_types as $video_type => $video_command ) {
