@@ -52,6 +52,11 @@
     display: none;
 }
 
+.wp-gp-pp__fallback-notice,
+.wp-gp-pp__fallback-notice p {
+    margin: 0;
+}
+
 @media only screen and (max-width: 500px) {
     .wp-gp-pp-container,
     .wp-gp-pp-video-player,

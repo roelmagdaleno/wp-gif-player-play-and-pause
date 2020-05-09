@@ -3,8 +3,8 @@ Contributors: rokumetal
 Donate link: https://paypal.me/roelmagdaleno
 Tags: gif, player
 Requires at least: 5.0
-Tested up to: 5.4
-Stable tag: 0.1.1
+Tested up to: 5.4.1
+Stable tag: 0.1.2
 Requires PHP: 7.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -76,6 +76,10 @@ The CSS classes for every GIF player are:
 
 If your Lazy Load plugin ask you to add a custom CSS class into the GIF asset to avoid Lazy Load you will have to use the GIF player custom filters in your `functions.php` file. [Check the custom filters to avoid Lazy Load for the GIF players](https://github.com/roelmagdaleno/wp-gif-player-play-and-pause/wiki/Hooks).
 
+== GIF as Video - Fallback ==
+
+If for any reason your current GIF Player as Video doesn't have any video source the plugin will render the default GIF Player (GIF) as fallback.
+
 == Installation ==
 
 1. Upload the plugin files to the `/wp-content/plugins/wp-gif-player-play-and-pause` directory, or install the plugin through the WordPress plugins screen directly.
@@ -131,6 +135,14 @@ If your Lazy Load plugin ask you to add a custom CSS class into the GIF asset to
 
 == Upgrade Notice ==
 
+= 0.1.2 =
+* FIX: GIF Canvas were showing the original width and height.
+* FIX: FFmpeg command not found message was showing another message.
+* FIX: GIF files were not converted to MP4 due to scale issues.
+* FIX: GIF files were saving in DB when these didn't exist.
+* IMPROVE: Run GIF Player JS functionality when exists in the post.
+* FEATURE: Add warning notice when a GIF Player Video rendered as fallback.
+
 = 0.1.1 =
 * FEATURE: Add filter to update the default CSS classes for the GIF asset.
 * IMPROVE: Check if the real GIF has any source in its attribute.
@@ -140,6 +152,14 @@ If your Lazy Load plugin ask you to add a custom CSS class into the GIF asset to
 * Initial plugin functionality. Check the [GitHub Repository](https://github.com/roelmagdaleno/wp-gif-player-play-and-pause) to check the commits.
 
 == Changelog ==
+
+= 0.1.2 =
+* FIX: GIF Canvas were showing the original width and height.
+* FIX: FFmpeg command not found message was showing another message.
+* FIX: GIF files were not converted to MP4 due to scale issues.
+* FIX: GIF files were saving in DB when these didn't exist.
+* IMPROVE: Run GIF Player JS functionality when exists in the post.
+* FEATURE: Add warning notice when a GIF Player Video rendered as fallback.
 
 = 0.1.1 =
 * FEATURE: Add filter to update the default CSS classes for the GIF asset.
