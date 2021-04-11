@@ -3,7 +3,7 @@ Contributors: rokumetal
 Donate link: https://paypal.me/roelmagdaleno
 Tags: gif, player
 Requires at least: 5.0
-Tested up to: 5.4.1
+Tested up to: 5.7.0
 Stable tag: 0.1.3
 Requires PHP: 7.0
 License: GPLv3 or later
