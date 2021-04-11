@@ -4,7 +4,7 @@ Donate link: https://paypal.me/roelmagdaleno
 Tags: gif, player
 Requires at least: 5.0
 Tested up to: 5.4.1
-Stable tag: 0.1.2
+Stable tag: 0.1.3
 Requires PHP: 7.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -135,6 +135,9 @@ If your Lazy Load plugin ask you to add a custom CSS class into the GIF asset to
 
 == Upgrade Notice ==
 
+= 0.1.3 =
+* FIX #8: add_gif_button_scripts() method running in frontend page and should run in backend
+
 = 0.1.2 =
 * FIX: GIF Canvas were showing the original width and height.
 * FIX: FFmpeg command not found message was showing another message.
@@ -152,6 +155,9 @@ If your Lazy Load plugin ask you to add a custom CSS class into the GIF asset to
 * Initial plugin functionality. Check the [GitHub Repository](https://github.com/roelmagdaleno/wp-gif-player-play-and-pause) to check the commits.
 
 == Changelog ==
+
+= 0.1.3 =
+* FIX #8: add_gif_button_scripts() method running in frontend page and should run in backend
 
 = 0.1.2 =
 * FIX: GIF Canvas were showing the original width and height.

@@ -204,6 +204,10 @@ if ( ! class_exists( 'WP_GP_PP_Media' ) ) {
 		 * @since 0.1.0
 		 */
 		public function add_gif_button_scripts() {
+			if ( ! is_admin() ) {
+				return;
+			}
+
 			$current_screen = get_current_screen();
 
 			if ( 'post' !== $current_screen->base ) {
